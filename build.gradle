@@ -1,0 +1,11 @@
+ext.ullinkGradleScripts = 'https://raw.github.com/gluck/gradle-scripts/master'
+apply from: "${ext.ullinkGradleScripts}/task-rules.gradle"
+apply from: "${ext.ullinkGradleScripts}/functions.gradle"
+apply from: "${ext.ullinkGradleScripts}/ullink-gradle-plugin-base.gradle"
+
+version = '1.1'
+description 'gradle-nuget-plugin is a Gradle plugin for NuGet, to package (and upload) artifacts'
+
+dependencies {
+  testCompile 'junit:junit:4.8.2'
+}
