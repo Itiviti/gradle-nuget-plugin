@@ -76,9 +76,7 @@ class NuGetPack extends BaseNuGet {
 			def builder = new groovy.xml.MarkupBuilder(writer)
 			builder.mkp.xmlDeclaration(version:'1.0')
 			builder.'package'(xmlns: 'http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd') {
-				logger.warn("Creating package")
 				if (nuspecCustom) {
-					logger.warn("Calling custom nuspec: " + nuspecCustom)
 					nuspecCustom.resolveStrategy = Closure.DELEGATE_FIRST
 					nuspecCustom.delegate = delegate
 					nuspecCustom.call()
