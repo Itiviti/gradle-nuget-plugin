@@ -10,53 +10,70 @@ import org.gradle.api.GradleException
 class NuGetPack extends BaseNuGet {
 	def nuspecFile
 	def destinationDir
+	def generateSymbols
+	def csprojPath
 	Closure nuspec
-	
+
     NuGetPack() {
 		super('pack')
 		conventionMapping.map('destinationDir', { project.convention.plugins.base.distsDir } )
-		
+
 		// TODO inputs/outputs
     }
-    
+
 	@Override
     List<String> extraCommands() {
 		def commandLineArgs = []
-		commandLineArgs += getNuSpecFile()
-		
+		commandLineArgs += getNuspecOrCsproj()
+
 		def destDir = project.file(getDestinationDir())
 		if (!destDir.exists()) {
 			destDir.mkdirs()
 		}
 		commandLineArgs += '-OutputDirectory'
 		commandLineArgs += destDir
-		
-		if (project.version) {
+
+		def spec = getNuspec()
+		def version = spec.metadata.version ?: project.version
+
+		if (version) {
 			commandLineArgs += '-Version'
-			commandLineArgs += project.version
+			commandLineArgs += version
+		}
+
+		if (generateSymbols) {
+			commandLineArgs += '-Symbols'
 		}
 		commandLineArgs
     }
-	
+
 	@Override
 	void verifyCommand() {
 		if (!getPackageFile().isFile()) {
 			throw new GradleException('NuGet package creation failed, check its output')
 		}
 	}
-	
+
 	void nuspec(Closure closure) {
 		nuspec = closure
 	}
-	
+
 	Closure getNuspecCustom() {
 		nuspec
 	}
-	
+
 	GPathResult getNuspec() {
 		new XmlSlurper().parse(getNuSpecFile())
 	}
-	
+
+	// Because Nuget pack handle csproj or nuspec file we should be able to use it in plugin
+	File getNuspecOrCsproj() {
+		if (csprojPath) {
+			return project.file(csprojPath)
+		}
+		getNuSpecFile()
+	}
+
 	File getNuSpecFile() {
 		if (!this.nuspecFile) {
 			this.nuspecFile = generateNuspecFile()
@@ -66,10 +83,10 @@ class NuGetPack extends BaseNuGet {
 
 	File getPackageFile() {
 		def spec = getNuspec()
-		def version = project.version ?: spec.metadata.version
-		new File(getDestinationDir(), spec.metadata.id.toString() + '.' + project.version + '.nupkg')
+		def version = spec.metadata.version ?: project.version
+		new File(getDestinationDir(), spec.metadata.id.toString() + '.' + version + '.nupkg')
 	}
-	
+
 	File generateNuspecFile() {
 		File nuspecFile = new File(temporaryDir, project.name + '.nuspec')
 		nuspecFile.withWriter("UTF-8") { writer ->
