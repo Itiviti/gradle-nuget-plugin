@@ -8,18 +8,38 @@ import org.gradle.api.tasks.TaskAction
 
 class NuGetPush extends BaseNuGet {
 	def nupkgFile
-	
+	def Symbols
+	String serverUrl
+	String apiKey
+	String timeout
+
     NuGetPush() {
 		super('push')
     }
-    
+
 	@Override
 	void verifyCommand() {
 		// TODO verify push, how ?
 	}
-	
+
     @Override
     List<String> extraCommands() {
-		[ nupkgFile ]
+		def commandLineArgs = [nupkgFile]
+		if (serverUrl)
+		{
+			commandLineArgs += "-Source"
+			commandLineArgs += serverUrl
+		}
+		if (apiKey)
+		{
+			commandLineArgs += "-ApiKey"
+			commandLineArgs += apiKey
+		}
+		if (timeout)
+		{
+			commandLineArgs += "-Timeout"
+			commandLineArgs += timeout
+		}
+		return commandLineArgs
     }
 }
