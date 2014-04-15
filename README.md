@@ -1,7 +1,7 @@
 # Gradle NuGet Plugin
 
 This plugin allows to execute NuGet.exe from a gradle build.
-It also supports pack & push commands through built-in tasks nugetPack & nugetPush.
+It also supports pack & push commands through built-in tasks, nugetPack, nugetPush & nugetRestore.
 
 ## nugetPack
 
@@ -16,7 +16,7 @@ Sample usage:
         }
     
         dependencies {
-            classpath "com.ullink.gradle:gradle-nuget-plugin:1.1"
+            classpath "com.ullink.gradle:gradle-nuget-plugin:1.3"
         }
     }
     
@@ -38,6 +38,21 @@ Sample usage:
 			}
 		}
     }
+	
+## nugetRestore
+
+    Nuget restore is used to retrieve missing packages before starting the build
+
+    - Sample usage:
+
+    nugetRestore {
+        projectFolder = path\to\project
+		restoreFolder = location\for\package\restore
+    }
+
+    Where
+     - projectFolder - could either contain the .sln file or the repositories.config file
+     - restoreFolder - used only if a folder with repositories.config is used
 
 # License
 

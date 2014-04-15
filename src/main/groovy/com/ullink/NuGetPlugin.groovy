@@ -17,6 +17,10 @@ class NuGetPlugin implements Plugin<Project> {
             nuget = project.task('nugetPush', type: NuGetPush)
 			nuget.group = BasePlugin.UPLOAD_GROUP
 			nuget.description = 'Executes nuget push command.'
+			
+			nuget = project.task('nugetRestore', type: NuGetRestore)
+			nuget.group = BasePlugin.BUILD_GROUP
+			nuget.description = 'Executes nuget package restore command.'
         }
     }
 }
