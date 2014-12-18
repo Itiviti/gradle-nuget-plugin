@@ -4,16 +4,16 @@ import org.gradle.api.internal.ConventionTask
 import org.gradle.api.tasks.StopActionException
 import org.gradle.api.tasks.TaskAction
 
-class BaseNuGet extends ConventionTask {
+public class BaseNuGet extends ConventionTask {
 	private static final String NUGET_EXE = 'NuGet.exe'
 	
 	String verbosity
 	String command
 	
-    BaseNuGet() {
+    public BaseNuGet() {
 	}
 	
-    BaseNuGet(String command) {
+    protected BaseNuGet(String command) {
 		this.command = command
     }
 	
