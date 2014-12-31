@@ -1,11 +1,41 @@
+plugins {
+    id 'nu.studer.plugindev' version '1.0.3'
+}
+
+group = 'com.ullink.gradle'
+version = '2.1'
+
 ext.ullinkGradleScripts = 'https://raw.github.com/gluck/gradle-scripts/master'
 apply from: "${ext.ullinkGradleScripts}/task-rules.gradle"
 apply from: "${ext.ullinkGradleScripts}/functions.gradle"
-apply from: "${ext.ullinkGradleScripts}/ullink-gradle-plugin-base.gradle"
 
-version = '2.0'
-description 'gradle-nuget-plugin is a Gradle plugin for NuGet, to package, upload artifacts and restore packages'
+apply plugin: 'groovy'
+
+description 'Gradle plugin for NuGet, to package, upload artifacts and restore packages.'
 
 dependencies {
   testCompile 'junit:junit:4.11'
+}
+
+bintray {
+    // to remove when upgraded plugindev to 1.0.4
+    user project.properties.bintrayUser
+    key project.properties.bintrayApiKey
+    pkg.repo = 'gradle-plugins'
+    pkg.version.gpg.sign = true
+}
+
+plugindev {
+    pluginId 'com.ullink.nuget'
+    pluginName 'com.ullink.gradle:gradle-nuget-plugin'
+    pluginImplementationClass 'com.ullink.NuGetPlugin'
+    pluginDescription project.description
+    pluginLicenses 'Apache-2.0'
+    pluginTags 'gradle', 'plugin', 'nuget', 'c#', '.net'
+    authorId 'gluck'
+    authorName 'Francois Valdy'
+    authorEmail 'francois.valdy@gmail.com'
+    projectUrl "https://github.com/Ullink/${project.name}"
+    projectInceptionYear '2012'
+    done()
 }
