@@ -16,7 +16,7 @@ Sample usage:
         }
     
         dependencies {
-            classpath "com.ullink.gradle:gradle-nuget-plugin:1.3"
+            classpath "com.ullink.gradle:gradle-nuget-plugin:2.1"
         }
     }
     
@@ -28,10 +28,10 @@ Sample usage:
 			metadata() {
 				id archivesBaseName
 				delegate.version version
-			    title 'project title'
-			    authors 'Francois Valdy'
-			    delegate.description '''some looong description...'''
-			    // ...
+				title 'project title'
+				authors 'Francois Valdy'
+				delegate.description '''some looong description...'''
+				// ...
 			}
 			delegate.files() {
 				delegate.file(src: 'somefile', target: 'tools')
@@ -56,4 +56,4 @@ Sample usage:
 
 # License
 
-All these plugins are licensed under the [Creative Commons — CC0 1.0 Universal](http://creativecommons.org/publicdomain/zero/1.0/) license with no warranty (expressed or implied) for any purpose.
+All these plugins are licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) with no warranty (expressed or implied) for any purpose.
