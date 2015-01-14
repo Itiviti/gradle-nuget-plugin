@@ -14,7 +14,7 @@ apply plugin: 'groovy'
 description 'Gradle plugin for NuGet, to package, upload artifacts and restore packages.'
 
 dependencies {
-  testCompile 'junit:junit:4.11'
+    testCompile 'junit:junit:4.11'
 }
 
 bintray {
@@ -23,6 +23,7 @@ bintray {
     key project.properties.bintrayApiKey
     pkg.repo = 'gradle-plugins'
     pkg.version.gpg.sign = true
+    pkg.userOrg = 'ullink'
 }
 
 plugindev {
