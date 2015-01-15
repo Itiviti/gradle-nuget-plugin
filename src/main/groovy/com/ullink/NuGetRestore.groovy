@@ -1,12 +1,10 @@
 package com.ullink
 
-import org.gradle.api.internal.ConventionTask
-import org.gradle.api.tasks.StopActionException
-import org.gradle.api.tasks.TaskAction
-
 class NuGetRestore extends BaseNuGet {
-    def projectFolder
-    def restoreFolder
+    def packagesDirectory
+    def solutionDirectory
+    def packagesConfigFile
+    def solutionFile
 
     NuGetRestore() {
         super('restore')
@@ -19,19 +17,20 @@ class NuGetRestore extends BaseNuGet {
     @Override
     List<String> extraCommands() {
         def commandLineArgs = new ArrayList<String>()
-        if (projectFolder) {
-            def file = new File(projectFolder, "repositories.config");
-            if (!file.exists())
-            {
-                logger.info("NuGet repositories.config not found at path: ${file}, running default package restore.");
-                return commandLineArgs;
-            }
 
-            commandLineArgs += file
-            if (restoreFolder) {
-                commandLineArgs += "-RestoreFolder"
-                commandLineArgs += restoreFolder
-            }
+        if (packagesDirectory) {
+            commandLineArgs += "-PackagesDirectory"
+            commandLineArgs += packagesDirectory
+        }
+        if (solutionDirectory) {
+            commandLineArgs += "-SolutionDirectory"
+            commandLineArgs += solutionDirectory
+        }
+        if (packagesConfigFile) {
+            commandLineArgs += packagesConfigFile
+        }
+        if (solutionFile) {
+            commandLineArgs += solutionFile
         }
 
         return commandLineArgs

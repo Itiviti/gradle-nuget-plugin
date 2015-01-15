@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.ullink.gradle'
-version = '2.1'
+version = '2.2'
 
 ext.ullinkGradleScripts = 'https://raw.github.com/gluck/gradle-scripts/master'
 apply from: "${ext.ullinkGradleScripts}/task-rules.gradle"
@@ -14,7 +14,7 @@ apply plugin: 'groovy'
 description 'Gradle plugin for NuGet, to package, upload artifacts and restore packages.'
 
 dependencies {
-  testCompile 'junit:junit:4.11'
+    testCompile 'junit:junit:4.11'
 }
 
 bintray {
@@ -23,6 +23,7 @@ bintray {
     key project.properties.bintrayApiKey
     pkg.repo = 'gradle-plugins'
     pkg.version.gpg.sign = true
+    pkg.userOrg = 'ullink'
 }
 
 plugindev {
