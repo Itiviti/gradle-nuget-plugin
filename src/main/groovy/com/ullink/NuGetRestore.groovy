@@ -1,7 +1,6 @@
 package com.ullink
 
 class NuGetRestore extends BaseNuGet {
-    def projectFolder
     def packagesDirectory
     def solutionDirectory
     def packagesConfigFile
@@ -19,14 +18,6 @@ class NuGetRestore extends BaseNuGet {
     List<String> extraCommands() {
         def commandLineArgs = new ArrayList<String>()
 
-        if (projectFolder) {
-            def file = new File(projectFolder, "repositories.config");
-            if (!file.exists()) {
-                logger.info("NuGet repositories.config not found at path: ${file}, running default package restore.");
-            } else {
-                commandLineArgs += file
-            }
-        }
         if (packagesDirectory) {
             commandLineArgs += "-PackagesDirectory"
             commandLineArgs += packagesDirectory
