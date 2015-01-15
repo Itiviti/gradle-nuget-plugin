@@ -4,9 +4,10 @@ import org.gradle.api.internal.ConventionTask
 import org.gradle.api.tasks.StopActionException
 import org.gradle.api.tasks.TaskAction
 
+//http://docs.nuget.org/docs/reference/Command-Line-Reference#Restore_command
 class NuGetRestore extends BaseNuGet {
     def projectFolder
-    def restoreFolder
+    def packagesDirectory
 
     NuGetRestore() {
         super('restore')
@@ -28,9 +29,9 @@ class NuGetRestore extends BaseNuGet {
             }
 
             commandLineArgs += file
-            if (restoreFolder) {
-                commandLineArgs += "-RestoreFolder"
-                commandLineArgs += restoreFolder
+            if (packagesDirectory) {
+                commandLineArgs += "-PackagesDirectory"
+                commandLineArgs += packagesDirectory
             }
         }
 
