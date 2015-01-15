@@ -28,11 +28,11 @@ class NuGetRestore extends BaseNuGet {
             }
         }
         if (packagesDirectory) {
-            commandLineArgs += "-SolutionDirectory"
+            commandLineArgs += "-PackagesDirectory"
             commandLineArgs += packagesDirectory
         }
         if (solutionDirectory) {
-            commandLineArgs += "-PackagesDirectory"
+            commandLineArgs += "-SolutionDirectory"
             commandLineArgs += solutionDirectory
         }
         if (packagesConfigFile) {
