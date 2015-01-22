@@ -5,6 +5,8 @@ class NuGetRestore extends BaseNuGet {
     def solutionDirectory
     def packagesConfigFile
     def solutionFile
+    def source
+    def configFile
 
     NuGetRestore() {
         super('restore')
@@ -25,6 +27,14 @@ class NuGetRestore extends BaseNuGet {
         if (solutionDirectory) {
             commandLineArgs += "-SolutionDirectory"
             commandLineArgs += solutionDirectory
+        }
+        if (source) {
+            commandLineArgs += "-Source"
+            commandLineArgs += source
+        }
+        if (configFile) {
+            commandLineArgs += "-ConfigFile"
+            commandLineArgs += configFile
         }
         if (packagesConfigFile) {
             commandLineArgs += packagesConfigFile
