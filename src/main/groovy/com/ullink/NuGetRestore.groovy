@@ -7,6 +7,7 @@ class NuGetRestore extends BaseNuGet {
     def solutionFile
     def source
     def configFile
+    def nocache = false
 
     NuGetRestore() {
         super('restore')
@@ -41,6 +42,9 @@ class NuGetRestore extends BaseNuGet {
         }
         if (solutionFile) {
             commandLineArgs += solutionFile
+        }
+        if (nocache) {
+            commandLineArgs += "-NoCache"
         }
 
         return commandLineArgs
