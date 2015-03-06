@@ -18,6 +18,8 @@ class NuGetPlugin implements Plugin<Project> {
         nuget = project.task('nugetRestore', type: NuGetRestore)
         nuget.group = BasePlugin.BUILD_GROUP
         nuget.description = 'Executes nuget package restore command.'
+        nuget.outputs.dir { nuget.getPackagesFolder() }
+        project.tasks.clean.dependsOn project.tasks.cleanNugetRestore
     }
 }
 
