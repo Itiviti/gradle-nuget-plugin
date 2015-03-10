@@ -49,4 +49,18 @@ class NuGetRestore extends BaseNuGet {
 
         return commandLineArgs
     }
+
+    def getPackagesFolder() {
+        // https://docs.nuget.org/consume/command-line-reference#restore-command
+        // If -PackagesDirectory <packagesDirectory> is specified, <packagesDirectory> is used as the packages directory.
+        if (packagesDirectory) {
+            return packagesDirectory
+        }
+
+        // If -SolutionDirectory <solutionDirectory> is specified, <solutionDirectory>\packages is used as the packages directory.
+        // SolutionFile can also be provided.
+        // Otherwise use '.\packages'
+        def solutionDir = solutionFile ? solutionFile.getParent() : solutionDirectory
+        return new File(solutionDir ?: '.', 'packages').absolutePath
+    }
 }
