@@ -1,70 +1,46 @@
 package com.ullink
 
-import org.gradle.api.internal.ConventionTask
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.Exec
 
-public class BaseNuGet extends ConventionTask {
+import static org.apache.tools.ant.taskdefs.condition.Os.*
+
+public class BaseNuGet extends Exec {
     private static final String NUGET_EXE = 'NuGet.exe'
 
     String verbosity
-    String command
 
     public BaseNuGet() {
+        def localNuget = new File(temporaryDir, NUGET_EXE)
+        if (!localNuget.exists()) {
+            new URL('https://nuget.org/nuget.exe').withInputStream { i ->
+                localNuget.withOutputStream{ it << i }
+            }
+        }
     }
 
     protected BaseNuGet(String command) {
-        this.command = command
+        this()
+        args command
     }
 
-    protected List<String> extraCommands() { [] }
-
-    protected void verifyCommand() {}
-
-    @TaskAction
-    def build() {
-        // NuGet bootstapper executable was downloaded from http://nuget.codeplex.com/downloads/get/412077#
-        // We could download it from there instead of storing it in the jar
-
-        File nugetExe = new File(temporaryDir, NUGET_EXE)
-
-        // because of http://issues.gradle.org/browse/GRADLE-2001
-        // ( http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6207022 )
-        // we need to skip cache ?
-
-        def url = BaseNuGet.class.getResource(NUGET_EXE)
-        def conn = url.openConnection()
-        conn.useCaches = false
-
-        nugetExe.setBytes(conn.getInputStream().getBytes())
-        nugetExe.setExecutable(true)
-
-        def commandLineArgs = [nugetExe]
-
-        commandLineArgs += getCommand()
-        commandLineArgs += extraCommands()
-
-        String verb = verbosity
-        if (!verb) {
-            if (logger.debugEnabled) {
-                verb = 'detailed'
-            } else if (logger.infoEnabled) {
-                verb = 'normal'
-            } else {
-                verb = 'quiet'
-            }
-        }
-        if (verb) {
-            commandLineArgs += '-Verbosity'
-            commandLineArgs += verb
+    @Override
+    void exec() {
+        if (isFamily(FAMILY_WINDOWS)) {
+            executable localNuget
+        } else {
+            executable "mono"
+            setArgs([localNuget.path, *getArgs()])
         }
 
-        commandLineArgs += '-NonInteractive'
+        args '-NonInteractive'
+        args '-Verbosity', (verbosity ? verbosity : getNugetVerbosity())
 
-        project.exec {
-            commandLine = commandLineArgs
-        }
+        super.exec()
+    }
 
-        // NuGet return code is always 0 .... great ....
-        verifyCommand()
+    private String getNugetVerbosity() {
+        if (logger.debugEnabled) return 'detailed'
+        if (logger.infoEnabled) return 'normal'
+        return 'quiet'
     }
 }

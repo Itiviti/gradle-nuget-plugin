@@ -1,53 +1,36 @@
 package com.ullink
 
 class NuGetRestore extends BaseNuGet {
+
+    def solutionFile
+    def packagesConfigFile
+
+    def source
+    def noCache = false
+    def configFile
+    def requireConsent = false
     def packagesDirectory
     def solutionDirectory
-    def packagesConfigFile
-    def solutionFile
-    def source
-    def configFile
-    def nocache = false
+    def disableParallelProcessing = false
 
     NuGetRestore() {
         super('restore')
     }
 
     @Override
-    void verifyCommand() {
-    }
+    void exec() {
+        if (packagesConfigFile) args packagesConfigFile
+        if (solutionFile) args solutionFile
 
-    @Override
-    List<String> extraCommands() {
-        def commandLineArgs = new ArrayList<String>()
+        if (source) args '-Source', source
+        if (noCache) args '-NoCache'
+        if (configFile) args '-ConfigFile', configFile
+        if (requireConsent) args '-RequireConsent'
+        if (packagesDirectory) args '-PackagesDirectory', packagesDirectory
+        if (solutionDirectory) args '-SolutionDirectory', solutionDirectory
+        if (disableParallelProcessing) args '-DisableParallelProcessing'
 
-        if (packagesDirectory) {
-            commandLineArgs += "-PackagesDirectory"
-            commandLineArgs += packagesDirectory
-        }
-        if (solutionDirectory) {
-            commandLineArgs += "-SolutionDirectory"
-            commandLineArgs += solutionDirectory
-        }
-        if (source) {
-            commandLineArgs += "-Source"
-            commandLineArgs += source
-        }
-        if (configFile) {
-            commandLineArgs += "-ConfigFile"
-            commandLineArgs += configFile
-        }
-        if (packagesConfigFile) {
-            commandLineArgs += packagesConfigFile
-        }
-        if (solutionFile) {
-            commandLineArgs += solutionFile
-        }
-        if (nocache) {
-            commandLineArgs += "-NoCache"
-        }
-
-        return commandLineArgs
+        super.exec()
     }
 
     def getPackagesFolder() {

@@ -1,5 +1,7 @@
 package com.ullink
 
+import org.junit.Before
+
 import static org.junit.Assert.*
 import groovy.xml.MarkupBuilder
 import org.gradle.api.Project
@@ -8,30 +10,38 @@ import org.junit.Test
 
 
 class NuGetPluginTest {
-    
-    @Test
-    public void nugetPluginAddsNuGetTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
+
+    private Project project
+
+    @Before
+    public void init() {
+        project = ProjectBuilder.builder().build()
         project.apply plugin: 'nuget'
+    }
+
+    @Test
+    public void nugetPluginAddsNuGetTasksToProject() {
         assertTrue(project.tasks.nugetPack instanceof NuGetPack)
         assertTrue(project.tasks.nugetPush instanceof NuGetPush)
     }
 	
 	@Test
-	public void nugetTaskExecute() {
-		Project project = ProjectBuilder.builder().build()
-		project.apply plugin: 'nuget'
-		project.task('nuget', type: BaseNuGet) {
-			command = 'help'
-		}
-		project.tasks.nuget.execute()
-		project.nugetPack {
-			nuspec {
-				metadata() {
-					id 'foo'
-				}
-			}
-		}
+	public void nugetHelpTaskExecute() {
+        project.task('nuget', type: BaseNuGet) {
+            args 'help'
+        }
+        //project.tasks.nuget.execute()
+    }
+
+    @Test
+    public void nugetPackGenerateNuspec() {
+        project.nugetPack {
+            nuspec {
+                metadata() {
+                    id 'foo'
+                }
+            }
+        }
 		project.tasks.nugetPack.generateNuspecFile()
 	}
 }
