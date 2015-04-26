@@ -6,11 +6,11 @@ import static org.apache.tools.ant.taskdefs.condition.Os.*
 
 public class BaseNuGet extends Exec {
     private static final String NUGET_EXE = 'NuGet.exe'
-
+    protected File localNuget = new File(temporaryDir, NUGET_EXE)
+    
     String verbosity
 
     public BaseNuGet() {
-        def localNuget = new File(temporaryDir, NUGET_EXE)
         if (!localNuget.exists()) {
             new URL('https://nuget.org/nuget.exe').withInputStream { i ->
                 localNuget.withOutputStream{ it << i }

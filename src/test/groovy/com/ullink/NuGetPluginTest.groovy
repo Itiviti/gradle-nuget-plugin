@@ -30,7 +30,7 @@ class NuGetPluginTest {
         project.task('nuget', type: BaseNuGet) {
             args 'help'
         }
-        //project.tasks.nuget.execute()
+        project.tasks.nuget.execute()
     }
 
     @Test
