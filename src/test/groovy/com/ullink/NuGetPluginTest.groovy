@@ -3,11 +3,9 @@ package com.ullink
 import org.junit.Before
 
 import static org.junit.Assert.*
-import groovy.xml.MarkupBuilder
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
-
 
 class NuGetPluginTest {
 
@@ -24,9 +22,9 @@ class NuGetPluginTest {
         assertTrue(project.tasks.nugetPack instanceof NuGetPack)
         assertTrue(project.tasks.nugetPush instanceof NuGetPush)
     }
-	
-	@Test
-	public void nugetHelpTaskExecute() {
+
+    @Test
+    public void nugetHelpTaskExecute() {
         project.task('nuget', type: BaseNuGet) {
             args 'help'
         }
@@ -42,6 +40,6 @@ class NuGetPluginTest {
                 }
             }
         }
-		project.tasks.nugetPack.generateNuspecFile()
-	}
+        project.tasks.nugetPack.generateNuspecFile()
+    }
 }

@@ -25,9 +25,9 @@ class NuGetInstall extends BaseNuGet {
         if (packageId) args packageId
         if (packagesConfigFile) args packagesConfigFile
 
-		if (!sources.isEmpty()) args '-Source', sources.join(';')
-		if (outputDirectory) args '-OutputDirectory', outputDirectory
-		if (version) args '-Version', version
+        if (!sources.isEmpty()) args '-Source', sources.join(';')
+        if (outputDirectory) args '-OutputDirectory', outputDirectory
+        if (version) args '-Version', version
         if (!includeVersionInPath) args '-ExcludeVersion'
         if (prerelease) args '-Prerelease'
         if (noCache) args '-NoCache'

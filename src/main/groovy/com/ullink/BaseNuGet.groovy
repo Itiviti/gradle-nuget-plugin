@@ -33,7 +33,7 @@ public class BaseNuGet extends Exec {
         }
 
         args '-NonInteractive'
-        args '-Verbosity', (verbosity ? verbosity : getNugetVerbosity())
+        args '-Verbosity', (verbosity ?: getNugetVerbosity())
 
         super.exec()
     }

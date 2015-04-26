@@ -2,15 +2,14 @@ package com.ullink
 
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder;
-import org.gradle.api.GradleException
 
 class NuGetPack extends BaseNuGet {
 
-	def nuspecFile
+    def nuspecFile
     Closure nuspec
     def csprojPath
 
-	def destinationDir = project.convention.plugins.base.distsDir
+    def destinationDir = project.convention.plugins.base.distsDir
     def basePath
     def exclude
     def generateSymbols = false
@@ -24,21 +23,21 @@ class NuGetPack extends BaseNuGet {
     def minClientVersion
 
     NuGetPack() {
-		super('pack')
+        super('pack')
 
-		// TODO inputs/outputs
+        // TODO inputs/outputs
     }
 
-	@Override
+    @Override
     void exec() {
-		args getNuspecOrCsproj()
+        args getNuspecOrCsproj()
         def spec = getNuspec()
 
-		def destDir = project.file(getDestinationDir())
-		if (!destDir.exists()) {
-			destDir.mkdirs()
-		}
-		args '-OutputDirectory', destDir
+        def destDir = project.file(getDestinationDir())
+        if (!destDir.exists()) {
+            destDir.mkdirs()
+        }
+        args '-OutputDirectory', destDir
 
         if (basePath) args '-BasePath', basePath
 
@@ -59,62 +58,62 @@ class NuGetPack extends BaseNuGet {
         super.exec()
     }
 
-	void nuspec(Closure closure) {
-		nuspec = closure
-	}
+    void nuspec(Closure closure) {
+        nuspec = closure
+    }
 
-	Closure getNuspecCustom() {
-		nuspec
-	}
+    Closure getNuspecCustom() {
+        nuspec
+    }
 
-	GPathResult getNuspec() {
-		new XmlSlurper().parse(getNuSpecFile())
-	}
+    GPathResult getNuspec() {
+        new XmlSlurper().parse(getNuSpecFile())
+    }
 
-	// Because Nuget pack handle csproj or nuspec file we should be able to use it in plugin
-	File getNuspecOrCsproj() {
-		if (csprojPath) {
-			return project.file(csprojPath)
-		}
-		getNuSpecFile()
-	}
+    // Because Nuget pack handle csproj or nuspec file we should be able to use it in plugin
+    File getNuspecOrCsproj() {
+        if (csprojPath) {
+            return project.file(csprojPath)
+        }
+        getNuSpecFile()
+    }
 
-	File getNuSpecFile() {
-		if (!this.nuspecFile) {
-			this.nuspecFile = generateNuspecFile()
-		}
-		project.file(this.nuspecFile)
-	}
+    File getNuSpecFile() {
+        if (!this.nuspecFile) {
+            this.nuspecFile = generateNuspecFile()
+        }
+        project.file(this.nuspecFile)
+    }
 
-	File getPackageFile() {
-		def spec = getNuspec()
-		def version = spec.metadata.version ?: project.version
-		new File(getDestinationDir(), spec.metadata.id.toString() + '.' + version + '.nupkg')
-	}
+    File getPackageFile() {
+        def spec = getNuspec()
+        def version = spec.metadata.version ?: project.version
+        new File(getDestinationDir(), spec.metadata.id.toString() + '.' + version + '.nupkg')
+    }
 
-	File generateNuspecFile() {
-		File nuspecFile = new File(temporaryDir, project.name + '.nuspec')
-		nuspecFile.withWriter("UTF-8") { writer ->
-			def builder = new MarkupBuilder(writer)
-			builder.mkp.xmlDeclaration(version:'1.0')
-			builder.'package'(xmlns: 'http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd') {
-				if (nuspecCustom) {
-					nuspecCustom.resolveStrategy = DELEGATE_FIRST
-					nuspecCustom.delegate = delegate
-					nuspecCustom.call()
-				} else {
-					// default content ?
-					metadata() {
-						id project.name
-						version project.version
-						description project.description
-					}
-					files() {
-						// ...
-					}
-				}
-			}
-		}
-		nuspecFile
-	}
+    File generateNuspecFile() {
+        File nuspecFile = new File(temporaryDir, project.name + '.nuspec')
+        nuspecFile.withWriter("UTF-8") { writer ->
+            def builder = new MarkupBuilder(writer)
+            builder.mkp.xmlDeclaration(version:'1.0')
+            builder.'package'(xmlns: 'http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd') {
+                if (nuspecCustom) {
+                    nuspecCustom.resolveStrategy = DELEGATE_FIRST
+                    nuspecCustom.delegate = delegate
+                    nuspecCustom.call()
+                } else {
+                    // default content ?
+                    metadata() {
+                        id project.name
+                        version project.version
+                        description project.description
+                    }
+                    files() {
+                        // ...
+                    }
+                }
+            }
+        }
+        nuspecFile
+    }
 }
