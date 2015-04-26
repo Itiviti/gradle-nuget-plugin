@@ -16,7 +16,7 @@ Sample usage:
         }
     
         dependencies {
-            classpath "com.ullink.gradle:gradle-nuget-plugin:2.1"
+            classpath "com.ullink.gradle:gradle-nuget-plugin:2.5"
         }
     }
     
