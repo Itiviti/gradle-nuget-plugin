@@ -54,6 +54,16 @@ Sample usage:
      - projectFolder - could either contain the .sln file or the repositories.config file
      - restoreFolder - used only if a folder with repositories.config is used
 
+# See also
+
+[Gradle Msbuild plugin](https://github.com/Ullink/gradle-msbuild-plugin) - Allows to build VS projects & solutions.
+
+[Gradle NUnit plugin](https://github.com/muryoh/gradle-nunit-plugin) - Allows to execute NUnit tests from CI (used with this plugin to build the projects prior to UT execution)
+
+[Gradle OpenCover plugin](https://github.com/muryoh/gradle-opencover-plugin) - Allows to execute the UTs through OpenCover for coverage reports.
+
+You can see these 4 plugins in use on [ILRepack](https://github.com/gluck/il-repack) project ([build.gradle](https://github.com/gluck/il-repack/blob/master/build.gradle)).
+
 # License
 
 All these plugins are licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) with no warranty (expressed or implied) for any purpose.
