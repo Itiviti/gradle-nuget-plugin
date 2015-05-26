@@ -32,6 +32,15 @@ class NuGetPluginTest {
     }
 
     @Test
+    public void nugetWithCleanWorks() {
+        project.task('nuget', type: BaseNuGet) {
+            args 'help'
+        }
+        project.tasks.clean.execute()
+        project.tasks.nuget.execute()
+    }
+
+    @Test
     public void nugetPackGenerateNuspec() {
         project.nugetPack {
             nuspec {
