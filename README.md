@@ -1,4 +1,4 @@
-# Gradle NuGet Plugin [![Build status](https://ci.appveyor.com/api/projects/status/ua9pbginenbf1b1u/branch/master?svg=true)](https://ci.appveyor.com/project/gluck/gradle-nuget-plugin/branch/master)
+# Gradle NuGet Plugin [![Build status](https://ci.appveyor.com/api/projects/status/ua9pbginenbf1b1u/branch/master?svg=true)](https://ci.appveyor.com/project/gluck/gradle-nuget-plugin/branch/master) [![Build Status](https://travis-ci.org/Ullink/gradle-nuget-plugin.svg?branch=master)](https://travis-ci.org/Ullink/gradle-nuget-plugin)
 
 This plugin allows to execute NuGet.exe from a gradle build.
 It also supports pack & push commands through built-in tasks, nugetPack, nugetPush & nugetRestore.
