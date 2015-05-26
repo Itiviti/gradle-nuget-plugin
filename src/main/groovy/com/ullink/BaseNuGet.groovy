@@ -12,11 +12,6 @@ public class BaseNuGet extends Exec {
 
     public BaseNuGet() {
         localNuget = new File(getNugetHome(), NUGET_EXE)
-        if (!localNuget.exists()) {
-            new URL('https://nuget.org/nuget.exe').withInputStream { i ->
-                localNuget.withOutputStream{ it << i }
-            }
-        }
     }
 
     private File getNugetHome(){
@@ -40,6 +35,11 @@ public class BaseNuGet extends Exec {
 
     @Override
     void exec() {
+        if (!localNuget.exists()) {
+            new URL('https://nuget.org/nuget.exe').withInputStream { i ->
+                localNuget.withOutputStream{ it << i }
+            }
+        }
         if (isFamily(FAMILY_WINDOWS)) {
             executable localNuget
         } else {
