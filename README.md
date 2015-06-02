@@ -46,13 +46,13 @@ Sample usage:
     - Sample usage:
 
     nugetRestore {
-        projectFolder = path\to\project
-		restoreFolder = location\for\package\restore
+        solutionDirectory = path\to\project
+        packagesDirectory = location\for\package\restore
     }
 
     Where
-     - projectFolder - could either contain the .sln file or the repositories.config file
-     - restoreFolder - used only if a folder with repositories.config is used
+     - solutionDirectory - could either contain the .sln file or the repositories.config file
+     - packagesDirectory - used only if a folder with repositories.config is used
 
 # See also
 
