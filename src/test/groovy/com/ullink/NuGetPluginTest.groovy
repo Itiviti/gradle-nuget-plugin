@@ -24,23 +24,6 @@ class NuGetPluginTest {
     }
 
     @Test
-    public void nugetHelpTaskExecute() {
-        project.task('nuget', type: BaseNuGet) {
-            args 'help'
-        }
-        project.tasks.nuget.execute()
-    }
-
-    @Test
-    public void nugetWithCleanWorks() {
-        project.task('nuget', type: BaseNuGet) {
-            args 'help'
-        }
-        project.tasks.clean.execute()
-        project.tasks.nuget.execute()
-    }
-
-    @Test
     public void nugetPackGenerateNuspec() {
         project.nugetPack {
             nuspec {
@@ -50,5 +33,27 @@ class NuGetPluginTest {
             }
         }
         project.tasks.nugetPack.generateNuspecFile()
+    }
+
+    @Test
+    public void nugetPackWorks() {
+        project.nugetPack {
+            nuspec {
+                metadata() {
+                    id 'empty-package'
+                    version '1.2.3'
+                    authors 'Nobody'
+                    delegate.description('Here to assert nugetPack works')
+                    language 'en-US'
+                    projectUrl 'https://github.com/Ullink/gradle-nuget-plugin'
+                }
+                files() {
+                    file(src: '*.nuspec')
+                }
+            }
+        }
+        project.tasks.clean.execute()
+        project.tasks.nugetPack.execute()
+        assertTrue(new File(project.tasks.nugetPack.destinationDir, 'empty-package.1.2.3.nupkg').exists())
     }
 }
