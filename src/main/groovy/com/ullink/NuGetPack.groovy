@@ -1,7 +1,9 @@
 package com.ullink
 
 import groovy.util.slurpersupport.GPathResult
-import groovy.xml.MarkupBuilder;
+import groovy.xml.MarkupBuilder
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile;
 
 class NuGetPack extends BaseNuGet {
 
@@ -71,6 +73,7 @@ class NuGetPack extends BaseNuGet {
     }
 
     // Because Nuget pack handle csproj or nuspec file we should be able to use it in plugin
+    @InputFile
     File getNuspecOrCsproj() {
         if (csprojPath) {
             return project.file(csprojPath)
@@ -79,12 +82,13 @@ class NuGetPack extends BaseNuGet {
     }
 
     File getNuSpecFile() {
-        if (!this.nuspecFile) {
+        if (!this.nuspecFile || !project.file(this.nuspecFile).exists()) {
             this.nuspecFile = generateNuspecFile()
         }
         project.file(this.nuspecFile)
     }
 
+    @OutputFile
     File getPackageFile() {
         def spec = getNuspec()
         def version = spec.metadata.version ?: project.version

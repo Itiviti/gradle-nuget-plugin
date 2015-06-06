@@ -38,6 +38,7 @@ class NuGetPluginTest {
     @Test
     public void nugetPackWorks() {
         project.nugetPack {
+            basePath = project.tasks.nugetPack.temporaryDir
             nuspec {
                 metadata() {
                     id 'empty-package'
@@ -48,12 +49,14 @@ class NuGetPluginTest {
                     projectUrl 'https://github.com/Ullink/gradle-nuget-plugin'
                 }
                 files() {
-                    file(src: '*.nuspec')
+                    file(src: 'foo.txt')
                 }
             }
         }
         project.tasks.clean.execute()
+        File fooFile = new File(project.tasks.nugetPack.temporaryDir, 'foo.txt');
+        fooFile.text = "Bar";
         project.tasks.nugetPack.execute()
-        assertTrue(new File(project.tasks.nugetPack.destinationDir, 'empty-package.1.2.3.nupkg').exists())
+        assertTrue(project.tasks.nugetPack.packageFile.exists())
     }
 }

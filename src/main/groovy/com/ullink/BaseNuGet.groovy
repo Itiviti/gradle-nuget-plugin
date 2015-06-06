@@ -25,7 +25,6 @@ public class BaseNuGet extends Exec {
         }        
     }
 
-
     protected BaseNuGet(String command) {
         this()
         args command
