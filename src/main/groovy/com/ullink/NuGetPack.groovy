@@ -26,8 +26,14 @@ class NuGetPack extends BaseNuGet {
 
     NuGetPack() {
         super('pack')
-
-        // TODO inputs/outputs
+        project.afterEvaluate {
+            def spec = getNuspec()
+            def specSources = spec.files?.file?.collect { it.src }
+            if (specSources && specSources.any())
+                project.tasks.matching { it.getClass().name == "com.ullink.Msbuild" && it.projects.any { specSources.contains it.properties.TargetPath } } .each {
+                    dependsOn it
+                }
+        }
     }
 
     @Override
@@ -73,7 +79,6 @@ class NuGetPack extends BaseNuGet {
     }
 
     // Because Nuget pack handle csproj or nuspec file we should be able to use it in plugin
-    @InputFile
     File getNuspecOrCsproj() {
         if (csprojPath) {
             return project.file(csprojPath)
@@ -88,7 +93,6 @@ class NuGetPack extends BaseNuGet {
         project.file(this.nuspecFile)
     }
 
-    @OutputFile
     File getPackageFile() {
         def spec = getNuspec()
         def version = spec.metadata.version ?: project.version

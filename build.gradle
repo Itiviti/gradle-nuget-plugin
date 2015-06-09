@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.ullink.gradle'
-version = '2.6'
+version = '2.7'
 
 apply plugin: 'groovy'
 

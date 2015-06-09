@@ -11,6 +11,13 @@ class NuGetPush extends BaseNuGet {
 
     NuGetPush() {
         super('push')
+        project.afterEvaluate {
+            if (nupkgFile) {
+                def tasks = project.tasks.withType(NuGetPack.class).findAll { it.packageFile == nupkgFile }
+                if (tasks.size() == 1)
+                    dependsOn tasks[0]
+            }
+        }
     }
 
     @Override
