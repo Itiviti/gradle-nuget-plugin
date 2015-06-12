@@ -21,8 +21,8 @@ public class BaseNuGet extends Exec {
         }
         else
         {
-            return temporaryDir
-        }        
+            return new File(new File(new File(project.gradle.gradleUserHomeDir, 'caches'), 'nuget'), '2')
+        }
     }
 
     protected BaseNuGet(String command) {
@@ -32,8 +32,11 @@ public class BaseNuGet extends Exec {
 
     @Override
     void exec() {
-        def localNuget = new File(getNugetHome(), NUGET_EXE)
+        def folder = getNugetHome()
+        def localNuget = new File(folder, NUGET_EXE)
         if (!localNuget.exists()) {
+            if (!folder.isDirectory())
+                folder.mkdirs()
             new URL('https://nuget.org/nuget.exe').withInputStream { i ->
                 localNuget.withOutputStream{ it << i }
             }
