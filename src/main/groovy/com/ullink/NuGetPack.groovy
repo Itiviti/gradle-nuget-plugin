@@ -28,11 +28,14 @@ class NuGetPack extends BaseNuGet {
         super('pack')
         project.afterEvaluate {
             def spec = getNuspec()
-            def specSources = spec.files?.file?.collect { it.src }
-            if (specSources && specSources.any())
-                project.tasks.matching { it.getClass().name == "com.ullink.Msbuild" && it.projects.any { specSources.contains it.properties.TargetPath } } .each {
+            def specSources = spec.files?.file?.collect { it.@src.text() }
+            if (specSources && specSources.any()) {
+                project.tasks.matching {
+                    it.class.name.startsWith("com.ullink.Msbuild") && it.projects.values().any { specSources.contains it.properties.TargetPath }
+                }.each {
                     dependsOn it
                 }
+            }
         }
     }
 
