@@ -11,6 +11,7 @@ class NuGetPush extends BaseNuGet {
 
     NuGetPush() {
         super('push')
+        conventionMapping.map "nupkgFile", { project.tasks.nugetPack.packageFile }
         project.afterEvaluate {
             if (nupkgFile) {
                 def tasks = project.tasks.withType(NuGetPack.class).findAll { it.packageFile == nupkgFile }
@@ -22,7 +23,7 @@ class NuGetPush extends BaseNuGet {
 
     @Override
     void exec() {
-        if (nupkgFile) args nupkgFile
+        args getNupkgFile()
 
         if (serverUrl) args '-Source', serverUrl
         if (apiKey) args '-ApiKey', apiKey
