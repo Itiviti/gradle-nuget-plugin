@@ -22,7 +22,7 @@ Sample usage:
     
     apply plugin:'nuget'
 
-    nuget {
+    nugetPack {
     	// this Closure will be applied to the nuspec XMLBuilder
 		nuspec {
 			metadata() {
