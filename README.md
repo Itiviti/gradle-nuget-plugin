@@ -23,22 +23,22 @@ Sample usage:
     apply plugin:'nuget'
 
     nugetPack {
-    	// this Closure will be applied to the nuspec XMLBuilder
-		nuspec {
-			metadata() {
-				id archivesBaseName
-				delegate.version version
-				title 'project title'
-				authors 'Francois Valdy'
-				delegate.description '''some looong description...'''
-				// ...
-			}
-			delegate.files() {
-				delegate.file(src: 'somefile', target: 'tools')
-			}
-		}
+        // this Closure will be applied to the nuspec XMLBuilder
+        nuspec {
+            metadata() {
+                title 'project title'
+                authors 'Francois Valdy'
+                // id archivesBaseName,      default is project.name
+                // delegate.version version, default is project.version
+                // delegate.description '''some looong description...''', default is project.description
+                // ...
+            }
+            delegate.files() {
+                delegate.file(src: 'somefile', target: 'tools')
+            }
+        }
     }
-	
+
 ## nugetRestore
 
     Nuget restore is used to retrieve missing packages before starting the build

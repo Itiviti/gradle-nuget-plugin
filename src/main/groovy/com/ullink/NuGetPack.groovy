@@ -1,7 +1,9 @@
 package com.ullink
 
+import groovy.util.XmlSlurper
 import groovy.util.slurpersupport.GPathResult
-import groovy.xml.MarkupBuilder
+import groovy.xml.StreamingMarkupBuilder
+import groovy.xml.XmlUtil
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile;
 
@@ -103,28 +105,46 @@ class NuGetPack extends BaseNuGet {
     }
 
     File generateNuspecFile() {
-        File nuspecFile = new File(temporaryDir, project.name + '.nuspec')
-        nuspecFile.withWriter("UTF-8") { writer ->
-            def builder = new MarkupBuilder(writer)
-            builder.mkp.xmlDeclaration(version:'1.0')
-            builder.'package'(xmlns: 'http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd') {
-                if (nuspecCustom) {
-                    nuspecCustom.resolveStrategy = DELEGATE_FIRST
-                    nuspecCustom.delegate = delegate
-                    nuspecCustom.call()
-                } else {
-                    // default content ?
-                    metadata() {
-                        id project.name
-                        version project.version
-                        description project.description
-                    }
-                    files() {
-                        // ...
-                    }
-                }
-            }
+        def nuspecFile = new File(temporaryDir, project.name + '.nuspec')
+        def nuspec = supplementDefaultValueOnNuspec generateNuspec()
+        nuspecFile.withWriter('UTF-8') { writer ->
+            XmlUtil.serialize (nuspec, writer)
         }
         nuspecFile
+    }
+
+    String generateNuspec() {
+        def builder = new StreamingMarkupBuilder()
+        builder.bind {
+            'package' (xmlns: 'http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd') {
+                if (nuspecCustom) {
+                    nuspecCustom.resolveStrategy = DELEGATE_ONLY
+                    nuspecCustom.delegate = delegate
+                    nuspecCustom.call()
+                }
+            }
+        }.toString()
+    }
+
+    GPathResult supplementDefaultValueOnNuspec(String nuspecString) {
+
+        def root = new XmlSlurper(false, false).parseText(nuspecString)
+
+        def defaultValues = {}
+        def applyDefaultValue = { String node, String value ->
+            if (root.metadata[node].isEmpty()) {
+                defaultValues <<= { delegate."$node" value }
+            }
+        }
+        applyDefaultValue ('id', project.name)
+        applyDefaultValue ('version', project.version)
+        applyDefaultValue ('description', project.description)
+
+        if (root.metadata.isEmpty()) {
+            root.appendNode { metadata defaultValues }
+        } else {
+            root.metadata.appendNode defaultValues
+        }
+        root
     }
 }
