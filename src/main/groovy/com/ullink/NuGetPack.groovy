@@ -118,7 +118,7 @@ class NuGetPack extends BaseNuGet {
         builder.bind {
             'package' (xmlns: 'http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd') {
                 if (nuspecCustom) {
-                    nuspecCustom.resolveStrategy = DELEGATE_ONLY
+                    nuspecCustom.resolveStrategy = DELEGATE_FIRST
                     nuspecCustom.delegate = delegate
                     nuspecCustom.call()
                 }
