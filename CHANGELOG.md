@@ -5,4 +5,6 @@ Plugin changelog
 -------
 
 * nugetPush input package now defaults to nugetPack generated one (if any)
-* nugetPack now defaults id, version and description in nuspec generation
+* nuspec generation now defaults id, version and description in nuspec generation
+* extract task nugetSpec from nugetPack to generate nuspec
+* support Map for defining nuspec in nugetSpec

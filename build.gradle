@@ -11,6 +11,7 @@ description 'Gradle plugin for NuGet, to package, upload artifacts and restore p
 
 dependencies {
     testCompile 'junit:junit:4.11'
+    testCompile 'xmlunit:xmlunit:1.6'
 }
 
 bintray {
