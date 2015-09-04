@@ -36,7 +36,7 @@ class NuGetPluginTest {
     <id>foo</id>
     <authors>Nobody</authors>
     <version>1.2.3</version>
-    <description>sss</description>
+    <description>fooDescription</description>
   </metadata>
   <files>
     <file src='foo.txt' />

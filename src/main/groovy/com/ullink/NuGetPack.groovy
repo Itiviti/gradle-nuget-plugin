@@ -29,7 +29,7 @@ class NuGetPack extends BaseNuGet {
         super('pack')
         project.afterEvaluate {
             def spec = getNuspec()
-            def specSources = spec.files?.file?.collect { it.@src.text() }
+            def specSources = spec?.files?.file?.collect { it.@src.text() }
             if (specSources && specSources.any()) {
                 project.tasks.matching {
                     it.class.name.startsWith("com.ullink.Msbuild") && it.projects.values().any { specSources.contains it.properties.TargetPath }
@@ -70,17 +70,6 @@ class NuGetPack extends BaseNuGet {
         super.exec()
     }
 
-    GPathResult getNuspec() {
-        def file = getNuSpecFile()
-        if (file) {
-            new XmlSlurper().parse(getNuSpecFile())
-        }
-        def nugetSpec = getDependentNugetSpec()
-        if (nugetSpec) {
-            new XmlSlurper(false, false).parseText(nugetSpec.generateNuspec())
-        }
-    }
-
     Task getDependentNugetSpec() {
         dependsOn.find { it instanceof NuGetSpec }
     }
@@ -90,16 +79,27 @@ class NuGetPack extends BaseNuGet {
         if (csprojPath) {
             return project.file(csprojPath)
         }
-        getNuSpecFile()
+        getNuspecFile()
     }
 
-    File getNuSpecFile() {
+    GPathResult getNuspec() {
+        def nuspecFile = getNuspecFile()
         if (nuspecFile) {
-            project.file(this.nuspecFile)
+            return new XmlSlurper().parse(project.file(nuspecFile))
         }
         def nugetSpec = getDependentNugetSpec()
         if (nugetSpec) {
-            nugetSpec.nuspecFile
+            return new XmlSlurper(false, false).parseText(nugetSpec.generateNuspec())
+        }
+    }
+
+    File getNuspecFile() {
+        if (nuspecFile) {
+            return project.file(this.nuspecFile)
+        }
+        def nugetSpec = getDependentNugetSpec()
+        if (nugetSpec && nugetSpec.nuspecFile.exists()) {
+            return nugetSpec.nuspecFile
         }
     }
 

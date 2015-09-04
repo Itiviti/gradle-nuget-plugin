@@ -38,7 +38,7 @@ You can see this plugin being used for real on [il-repack](https://github.com/gl
                 // ...
             ]
             files: [
-                { file (src: 'somefile1', target: 'tools') }
+                { file (src: 'somefile1', target: 'tools') },
                 { file (src: 'somefile2', target: 'tools') }
             ]
         ]

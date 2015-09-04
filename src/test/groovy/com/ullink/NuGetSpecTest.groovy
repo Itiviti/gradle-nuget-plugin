@@ -69,7 +69,7 @@ class NuGetSpecTest {
                     }
                 ],
                 files: [
-                    { file ( src: 'bar', target: 'barTarget' ) }
+                    { file ( src: 'bar', target: 'barTarget' ) },
                     { file ( src: 'baz', target: 'bazTarget' ) }
                 ]
             ]
