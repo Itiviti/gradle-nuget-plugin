@@ -9,6 +9,7 @@ import org.gradle.api.tasks.OutputFile;
 
 class NuGetPack extends BaseNuGet {
 
+    def packageVersion
     def nuspecFile
     Closure nuspec
     def csprojPath
@@ -53,8 +54,7 @@ class NuGetPack extends BaseNuGet {
         args '-OutputDirectory', destDir
 
         if (basePath) args '-BasePath', basePath
-
-        def version = spec.metadata.version ?: project.version
+        def version = packageVersion ?: spec.metadata.version ?: project.version
         if (version) args '-Version', version
 
         if (exclude) args '-Exclude', exclude
