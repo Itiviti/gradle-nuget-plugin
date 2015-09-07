@@ -25,14 +25,25 @@ class NuGetPluginTest {
 
     @Test
     public void nugetPackGenerateNuspec() {
+        project.version = '2.1'
+        project.description = 'baz'
         project.nugetPack {
             nuspec {
                 metadata() {
                     id 'foo'
+                    delegate.description 'bar'
                 }
             }
         }
         project.tasks.nugetPack.generateNuspecFile()
+        assertEquals (
+'''<?xml version="1.0" encoding="UTF-8"?><package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>foo</id>
+    <description>bar</description>
+    <version>2.1</version>
+  </metadata>
+</package>'''.replaceAll("[\r\n]", ""), project.tasks.nugetPack.getNuSpecFile().text.replaceAll("[\r\n]", "").trim())
     }
 
     @Test

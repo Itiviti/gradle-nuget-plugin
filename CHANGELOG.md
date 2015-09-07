@@ -5,3 +5,4 @@ Plugin changelog
 -------
 
 * nugetPush input package now defaults to nugetPack generated one (if any)
+* nugetPack now defaults id, version and description in nuspec generation
