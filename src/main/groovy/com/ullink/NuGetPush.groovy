@@ -14,9 +14,12 @@ class NuGetPush extends BaseNuGet {
     }
 
     String getNugetPackOutputFile() {
-        def tasks = project.tasks.withType(NuGetPack.class)
-        if (tasks.size() == 1)
-           tasks.first().packageFile
+        if (dependentNugetSpec)
+           dependentNugetSpec.packageFile
+    }
+
+    NuGetPack getDependentNugetSpec() {
+        dependsOn.find { it instanceof NuGetPack }
     }
 
     @Override

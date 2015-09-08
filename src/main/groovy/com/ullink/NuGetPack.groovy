@@ -3,6 +3,7 @@ package com.ullink
 import groovy.util.XmlSlurper
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.XmlUtil
+import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.Task
@@ -70,7 +71,22 @@ class NuGetPack extends BaseNuGet {
         super.exec()
     }
 
-    Task getDependentNugetSpec() {
+    void nuspec(Closure closure) {
+        if (dependentNuGetSpec) {
+            dependentNuGetSpec.nuspec closure
+        } else {
+            def nuGetSpec = project.task("nugetSpec_$name", type: NuGetSpec)
+            nuGetSpec.with {
+                group = BasePlugin.BUILD_GROUP
+                description = "Generates nuspec file for task $name."
+                nuspec closure
+            }
+
+            dependsOn nuGetSpec
+        }
+    }
+
+    NuGetSpec getDependentNuGetSpec() {
         dependsOn.find { it instanceof NuGetSpec }
     }
 
@@ -84,12 +100,11 @@ class NuGetPack extends BaseNuGet {
 
     GPathResult getNuspec() {
         def nuspecFile = getNuspecFile()
-        if (nuspecFile) {
+        if (nuspecFile?.exists()) {
             return new XmlSlurper().parse(project.file(nuspecFile))
         }
-        def nugetSpec = getDependentNugetSpec()
-        if (nugetSpec) {
-            return new XmlSlurper(false, false).parseText(nugetSpec.generateNuspec())
+        if (dependentNuGetSpec) {
+            return new XmlSlurper(false, false).parseText(dependentNuGetSpec.generateNuspec())
         }
     }
 
@@ -97,9 +112,8 @@ class NuGetPack extends BaseNuGet {
         if (nuspecFile) {
             return project.file(this.nuspecFile)
         }
-        def nugetSpec = getDependentNugetSpec()
-        if (nugetSpec && nugetSpec.nuspecFile.exists()) {
-            return nugetSpec.nuspecFile
+        if (dependentNuGetSpec) {
+            return dependentNuGetSpec.nuspecFile
         }
     }
 
