@@ -2,15 +2,15 @@ package com.ullink
 
 import groovy.util.XmlSlurper
 import groovy.util.slurpersupport.GPathResult
-import groovy.xml.StreamingMarkupBuilder
 import groovy.xml.XmlUtil
+import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.Task
 
 class NuGetPack extends BaseNuGet {
 
     def nuspecFile
-    Closure nuspec
     def csprojPath
 
     def destinationDir = project.convention.plugins.base.distsDir
@@ -30,7 +30,7 @@ class NuGetPack extends BaseNuGet {
         super('pack')
         project.afterEvaluate {
             def spec = getNuspec()
-            def specSources = spec.files?.file?.collect { it.@src.text() }
+            def specSources = spec?.files?.file?.collect { it.@src.text() }
             if (specSources && specSources.any()) {
                 project.tasks.matching {
                     it.class.name.startsWith("com.ullink.Msbuild") && it.projects.values().any { specSources.contains it.properties.TargetPath }
@@ -54,7 +54,7 @@ class NuGetPack extends BaseNuGet {
 
         if (basePath) args '-BasePath', basePath
 
-        def version = spec.metadata.version ?: project.version
+        def version = spec?.metadata?.version ?: project.version
         if (version) args '-Version', version
 
         if (exclude) args '-Exclude', exclude
@@ -72,15 +72,22 @@ class NuGetPack extends BaseNuGet {
     }
 
     void nuspec(Closure closure) {
-        nuspec = closure
+        if (dependentNuGetSpec) {
+            dependentNuGetSpec.nuspec closure
+        } else {
+            def nuGetSpec = project.task("nugetSpec_$name", type: NuGetSpec)
+            nuGetSpec.with {
+                group = BasePlugin.BUILD_GROUP
+                description = "Generates nuspec file for task $name."
+                nuspec closure
+            }
+
+            dependsOn nuGetSpec
+        }
     }
 
-    Closure getNuspecCustom() {
-        nuspec
-    }
-
-    GPathResult getNuspec() {
-        new XmlSlurper().parse(getNuSpecFile())
+    NuGetSpec getDependentNuGetSpec() {
+        dependsOn.find { it instanceof NuGetSpec }
     }
 
     // Because Nuget pack handle csproj or nuspec file we should be able to use it in plugin
@@ -88,63 +95,31 @@ class NuGetPack extends BaseNuGet {
         if (csprojPath) {
             return project.file(csprojPath)
         }
-        getNuSpecFile()
+        getNuspecFile()
     }
 
-    File getNuSpecFile() {
-        if (!this.nuspecFile || !project.file(this.nuspecFile).exists()) {
-            this.nuspecFile = generateNuspecFile()
+    GPathResult getNuspec() {
+        def nuspecFile = getNuspecFile()
+        if (nuspecFile?.exists()) {
+            return new XmlSlurper().parse(project.file(nuspecFile))
         }
-        project.file(this.nuspecFile)
+        if (dependentNuGetSpec) {
+            return new XmlSlurper(false, false).parseText(dependentNuGetSpec.generateNuspec())
+        }
+    }
+
+    File getNuspecFile() {
+        if (nuspecFile) {
+            return project.file(this.nuspecFile)
+        }
+        if (dependentNuGetSpec) {
+            return dependentNuGetSpec.nuspecFile
+        }
     }
 
     File getPackageFile() {
         def spec = getNuspec()
         def version = spec.metadata.version ?: project.version
         new File(getDestinationDir(), spec.metadata.id.toString() + '.' + version + '.nupkg')
-    }
-
-    File generateNuspecFile() {
-        def nuspecFile = new File(temporaryDir, project.name + '.nuspec')
-        def nuspec = supplementDefaultValueOnNuspec generateNuspec()
-        nuspecFile.withWriter('UTF-8') { writer ->
-            XmlUtil.serialize (nuspec, writer)
-        }
-        nuspecFile
-    }
-
-    String generateNuspec() {
-        def builder = new StreamingMarkupBuilder()
-        builder.bind {
-            'package' (xmlns: 'http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd') {
-                if (nuspecCustom) {
-                    nuspecCustom.resolveStrategy = DELEGATE_FIRST
-                    nuspecCustom.delegate = delegate
-                    nuspecCustom.call()
-                }
-            }
-        }.toString()
-    }
-
-    GPathResult supplementDefaultValueOnNuspec(String nuspecString) {
-
-        def root = new XmlSlurper(false, false).parseText(nuspecString)
-
-        def defaultValues = {}
-        def applyDefaultValue = { String node, String value ->
-            if (root.metadata[node].isEmpty()) {
-                defaultValues <<= { delegate."$node" value }
-            }
-        }
-        applyDefaultValue ('id', project.name)
-        applyDefaultValue ('version', project.version)
-        applyDefaultValue ('description', project.description)
-
-        if (root.metadata.isEmpty()) {
-            root.appendNode { metadata defaultValues }
-        } else {
-            root.metadata.appendNode defaultValues
-        }
-        root
     }
 }

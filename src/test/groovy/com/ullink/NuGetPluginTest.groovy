@@ -21,52 +21,36 @@ class NuGetPluginTest {
     public void nugetPluginAddsNuGetTasksToProject() {
         assertTrue(project.tasks.nugetPack instanceof NuGetPack)
         assertTrue(project.tasks.nugetPush instanceof NuGetPush)
-    }
-
-    @Test
-    public void nugetPackGenerateNuspec() {
-        project.version = '2.1'
-        project.description = 'baz'
-        project.nugetPack {
-            nuspec {
-                metadata() {
-                    id 'foo'
-                    delegate.description 'bar'
-                }
-            }
-        }
-        project.tasks.nugetPack.generateNuspecFile()
-        assertEquals (
-'''<?xml version="1.0" encoding="UTF-8"?><package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata>
-    <id>foo</id>
-    <description>bar</description>
-    <version>2.1</version>
-  </metadata>
-</package>'''.replaceAll("[\r\n]", ""), project.tasks.nugetPack.getNuSpecFile().text.replaceAll("[\r\n]", "").trim())
+        assertTrue(project.tasks.nugetSpec instanceof NuGetSpec)
     }
 
     @Test
     public void nugetPackWorks() {
+
+        project.tasks.clean.execute()
+
+        File nuspec = new File(project.tasks.nugetPack.temporaryDir, 'foo.nuspec')
+        nuspec.text = '''<?xml version='1.0'?>
+<package xmlns='http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd'>
+  <metadata>
+    <id>foo</id>
+    <authors>Nobody</authors>
+    <version>1.2.3</version>
+    <description>fooDescription</description>
+  </metadata>
+  <files>
+    <file src='foo.txt' />
+  </files>
+</package>'''
+
+        File fooFile = new File(project.tasks.nugetPack.temporaryDir, 'foo.txt')
+        fooFile.text = "Bar"
+
         project.nugetPack {
             basePath = project.tasks.nugetPack.temporaryDir
-            nuspec {
-                metadata() {
-                    id 'empty-package'
-                    version '1.2.3'
-                    authors 'Nobody'
-                    delegate.description('Here to assert nugetPack works')
-                    language 'en-US'
-                    projectUrl 'https://github.com/Ullink/gradle-nuget-plugin'
-                }
-                files() {
-                    file(src: 'foo.txt')
-                }
-            }
+            nuspecFile = nuspec
         }
-        project.tasks.clean.execute()
-        File fooFile = new File(project.tasks.nugetPack.temporaryDir, 'foo.txt');
-        fooFile.text = "Bar";
+
         project.tasks.nugetPack.execute()
         assertTrue(project.tasks.nugetPack.packageFile.exists())
     }

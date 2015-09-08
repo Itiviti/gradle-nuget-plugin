@@ -8,7 +8,11 @@ It also supports pack & push commands through built-in tasks, nugetPack, nugetPu
 You can see this plugin being used for real on [il-repack](https://github.com/gluck/il-repack) project.
 (together with msbuild one)
 
-Sample usage:
+## nugetSpec
+
+    The task is to generate nuspec file by custom configuration
+
+    - Sample usage:
 
     buildscript {
         repositories {
@@ -22,21 +26,22 @@ Sample usage:
     
     apply plugin:'nuget'
 
-    nugetPack {
-        // this Closure will be applied to the nuspec XMLBuilder
-        nuspec {
-            metadata() {
-                title 'project title'
-                authors 'Francois Valdy'
-                // id archivesBaseName,      default is project.name
-                // delegate.version version, default is project.version
-                // delegate.description '''some looong description...''', default is project.description
+    nugetSpec {
+        // Array, Map and Closure could be used to generate nuspec XML, for details please check NuGetSpecTest 
+        nuspec = [
+            metadata: [
+                title:          'project title'
+                authors:        'Francois Valdy'
+                // id:          default is project.name
+                // version:     default is project.version
+                // description: default is project.description
                 // ...
-            }
-            delegate.files() {
-                delegate.file(src: 'somefile', target: 'tools')
-            }
-        }
+            ]
+            files: [
+                { file (src: 'somefile1', target: 'tools') },
+                { file (src: 'somefile2', target: 'tools') }
+            ]
+        ]
     }
 
 ## nugetRestore
