@@ -27,7 +27,7 @@ You can see this plugin being used for real on [il-repack](https://github.com/gl
     apply plugin:'nuget'
 
     nugetSpec {
-        // Closure will be applied to XMLBuilder
+        // Array, Map and Closure could be used to generate nuspec XML, for details please check NuGetSpecTest 
         nuspec = [
             metadata: [
                 title:          'project title'

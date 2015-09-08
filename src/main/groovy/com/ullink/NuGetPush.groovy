@@ -14,11 +14,11 @@ class NuGetPush extends BaseNuGet {
     }
 
     String getNugetPackOutputFile() {
-        if (dependentNugetSpec)
-           dependentNugetSpec.packageFile
+        if (dependentNuGetPack)
+           dependentNuGetPack.packageFile
     }
 
-    NuGetPack getDependentNugetSpec() {
+    NuGetPack getDependentNuGetPack() {
         dependsOn.find { it instanceof NuGetPack }
     }
 
