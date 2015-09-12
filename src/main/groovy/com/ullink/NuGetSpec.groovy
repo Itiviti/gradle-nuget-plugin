@@ -39,15 +39,16 @@ class NuGetSpec extends Exec {
                 def visitor
                 visitor = { entry ->
                     switch (entry) {
-                        case { entry instanceof Closure }:
+                        case Closure:
                             entry.resolveStrategy = DELEGATE_FIRST
                             entry.delegate = delegate
                             entry.call()
                             break
-                        case { entry instanceof Map.Entry }:
+                        case Map.Entry:
                             "$entry.key" { visitor entry.value }
                             break
-                        case { entry instanceof Map || entry instanceof Collection }:
+                        case Map:
+                        case Collection:
                             entry.collect(visitor)
                             break
                         default:
