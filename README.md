@@ -30,8 +30,8 @@ You can see this plugin being used for real on [il-repack](https://github.com/gl
         // Array, Map and Closure could be used to generate nuspec XML, for details please check NuGetSpecTest 
         nuspec = [
             metadata: [
-                title:          'project title'
-                authors:        'Francois Valdy'
+                title:          'project title',
+                authors:        'Francois Valdy',
                 // id:          default is project.name
                 // version:     default is project.version
                 // description: default is project.description
