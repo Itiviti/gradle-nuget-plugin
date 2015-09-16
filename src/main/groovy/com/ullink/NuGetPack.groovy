@@ -104,7 +104,10 @@ class NuGetPack extends BaseNuGet {
             return new XmlSlurper().parse(project.file(nuspecFile))
         }
         if (dependentNuGetSpec) {
-            return new XmlSlurper(false, false).parseText(dependentNuGetSpec.generateNuspec())
+            def generatedNuspec = dependentNuGetSpec.generateNuspec()
+            if (generatedNuspec) {
+                return new XmlSlurper(false, false).parseText(generatedNuspec)
+            }
         }
     }
 
