@@ -1,8 +1,7 @@
 package com.ullink
 
+import org.gradle.api.Task
 import org.junit.Before
-
-import static org.junit.Assert.*
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
@@ -26,6 +25,7 @@ class NuGetSpecTest {
             nuspec {
                 metadata {
                     id 'foo'
+                    title 'fooTitle'
                     delegate.description 'fooDescription'
                     frameworkAssemblies {
                         frameworkAssembly (assemblyName: "System.Web", targetFramework: "net40")
@@ -44,6 +44,7 @@ class NuGetSpecTest {
                 <id>foo</id>
                 <version>unspecified</version>
                 <description>fooDescription</description>
+                <title>fooTitle</title>
                 <frameworkAssemblies>
                     <frameworkAssembly assemblyName='System.Web' targetFramework='net40' />
                 </frameworkAssemblies>
@@ -63,6 +64,7 @@ class NuGetSpecTest {
             nuspec = [
                 metadata: [
                     id: 'foo',
+                    title: 'fooTitle',
                     description: 'fooDescription',
                     frameworkAssemblies: {
                         frameworkAssembly (assemblyName: "System.Web", targetFramework: "net40")
@@ -81,6 +83,7 @@ class NuGetSpecTest {
                 <id>foo</id>
                 <version>unspecified</version>
                 <description>fooDescription</description>
+                <title>fooTitle</title>
                 <frameworkAssemblies>
                     <frameworkAssembly assemblyName='System.Web' targetFramework='net40' />
                 </frameworkAssemblies>
@@ -113,13 +116,14 @@ class NuGetSpecTest {
                 <id>foo</id>
                 <version>2.1</version>
                 <description>fooDescription</description>
+                <title>foo</title>
             </metadata>
         </package>'''
         assertXMLEqual (expected, project.tasks.nugetSpec.generateNuspec())
     }
 
     @Test
-    public void generateNuspec_OverridDefaultValue() {
+    public void generateNuspec_OverrideDefaultValue() {
         Project project = ProjectBuilder.builder().withName('foo').build()
         project.with {
             description = 'fooDescription'
@@ -132,7 +136,8 @@ class NuGetSpecTest {
                 metadata: [
                     id: 'bar',
                     description: 'barDescription',
-                    version: '4.5'
+                    version: '4.5',
+                    title: 'barTitle'
                 ]
             ]
         }
@@ -144,8 +149,58 @@ class NuGetSpecTest {
                 <id>bar</id>
                 <version>4.5</version>
                 <description>barDescription</description>
+                <title>barTitle</title>
             </metadata>
         </package>'''
         assertXMLEqual (expected, project.tasks.nugetSpec.generateNuspec())
+    }
+
+    @Test
+    public void generateNuspec_defaultFilesFromCsproj() {
+        Project project = ProjectBuilder.builder().withName('foo').build()
+        project.with {
+            apply plugin: 'nuget'
+        }
+
+        withMSBuildTask(project, 'bar', new File('c:\\folder\\bin\\bar.dll'))
+
+        project.nugetSpec {
+            nuspec { }
+        }
+
+        def expected =
+                '''
+        <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+            <metadata>
+                <id>foo</id>
+                <version>unspecified</version>
+                <description>foo</description>
+                <title>foo</title>
+            </metadata>
+            <files>
+                <file src='c:\\folder\\bin\\bar.dll' target='lib/net35' />
+            </files>
+        </package>'''
+        assertXMLEqual (expected, project.tasks.nugetSpec.generateNuspec())
+    }
+
+    private static withMSBuildTask(Project project, String assemblyName, File artifact) {
+        def msbuildTask = [
+                getName: { 'msbuild' }
+        ] as Task
+        msbuildTask.metaClass.getMainProject = {
+            def mainProject = new Object()
+            mainProject.metaClass.getProperties = {
+                [
+                        'AssemblyName'          : assemblyName,
+                        'TargetFrameworkVersion': 'v3.5'
+                ]
+            }
+
+            mainProject.metaClass.getDotnetArtifacts = { [ artifact ] }
+            mainProject
+        }
+
+        project.tasks.add(msbuildTask)
     }
 }
