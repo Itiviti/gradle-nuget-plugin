@@ -1,6 +1,14 @@
 Plugin changelog
 ====================
 
+2.10
+-------
+
+* title default value is the project name
+* description is the project name if no description is provided
+* files are taken from artifacts of msbuild plugin and the target
+folder from target framework in csproj
+
 2.9
 -------
 
