@@ -164,8 +164,8 @@ class NuGetSpecTest {
         def msbuildTask = new MSBuildTaskBuilder()
                 .withAssemblyName('bar')
                 .withFrameworkVersion('v3.5')
-                .withArtifact('c:\\folder\\bin\\bar.dll')
-                .withProjectFile('c:\\does not exist')
+                .withArtifact('folder/bin/bar.dll')
+                .withProjectFile('folder/does not exist')
                 .build()
         project.tasks.add(msbuildTask)
 
@@ -183,9 +183,9 @@ class NuGetSpecTest {
                 <title>foo</title>
             </metadata>
             <files>
-                <file src='c:\\folder\\bin\\bar.dll' target='lib/net35' />
+                <file src='folder\\bin\\bar.dll' target='lib/net35' />
             </files>
-        </package>'''
+        </package>'''.replace('\\', File.separator)
         assertXMLEqual (expected, project.tasks.nugetSpec.generateNuspec())
     }
 
