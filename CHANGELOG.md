@@ -9,6 +9,7 @@ Plugin changelog
 * files are taken from artifacts of msbuild plugin and the target
 folder from target framework in csproj
 * take dependencies from packages.config
+* nuget version is now configurable, and default has been bumped to 3.2.0
 
 2.9
 -------
