@@ -1,5 +1,6 @@
 package com.ullink
 
+import groovy.util.slurpersupport.GPathResult
 import groovy.xml.XmlUtil
 import org.gradle.api.tasks.Exec
 
@@ -62,13 +63,14 @@ class NuGetSpec extends Exec {
 
     String supplementDefaultValueOnNuspec(String nuspecString) {
         def final msbuildTaskExists = project.tasks.findByName('msbuild') != null
+        def final packageConfigFileName = 'packages.config'
 
-        def root = new XmlSlurper(false, false).parseText(nuspecString)
+        def GPathResult root = new XmlSlurper(false, false).parseText(nuspecString)
 
-        def defaultValues = {}
-        def setDefaultMetadata = { String node, String value ->
+        def defaultMetadata = []
+        def setDefaultMetadata = { String node, value ->
             if (root.metadata[node].isEmpty()) {
-                defaultValues <<= { delegate."$node" value }
+                defaultMetadata.add( { delegate."$node" value } )
             }
         }
 
@@ -78,26 +80,42 @@ class NuGetSpec extends Exec {
         setDefaultMetadata ('description', project.description ? project.description : project.name)
 
         def appendAndCreateParentIfNeeded = {
-            parentNodeName, children ->
-                if (root."$parentNodeName".isEmpty()) {
-                    root.appendNode { "$parentNodeName" children }
-                } else {
-                    root."$parentNodeName".appendNode children
+            String parentNodeName, List children ->
+                if(!children.isEmpty()) {
+                    if (root."$parentNodeName".isEmpty()) {
+                        root << { "$parentNodeName" children }
+                    } else {
+                        root."$parentNodeName" << children
+                    }
                 }
         }
 
-        appendAndCreateParentIfNeeded('metadata', defaultValues)
-
         if (msbuildTaskExists) {
-            def defaultFiles = {}
+            def mainProject = project.msbuild.mainProject
+
+            def defaultFiles = []
             project.msbuild.mainProject.dotnetArtifacts.each {
                 artifact ->
-                    def fwkFolderVersion = project.msbuild.mainProject.properties.TargetFrameworkVersion.toString().replace('v', '').replace('.', '')
-                    defaultFiles <<= { file(src: artifact.toString(), target: 'lib/net' + fwkFolderVersion) }
+                    def fwkFolderVersion = mainProject.properties.TargetFrameworkVersion.toString().replace('v', '').replace('.', '')
+                    defaultFiles.add({ file(src: artifact.toString(), target: 'lib/net' + fwkFolderVersion) })
             }
-
             appendAndCreateParentIfNeeded('files', defaultFiles)
+
+            def packageConfigFile = new File(
+                    new File(mainProject.projectFile).parentFile,
+                    packageConfigFileName)
+            if (packageConfigFile.exists()) {
+                def defaultDependencies = []
+                def packages = new XmlParser().parse(packageConfigFile)
+                packages.package.each {
+                    packageElement ->
+                        defaultDependencies.add({ dependency(id: packageElement.@id, version: packageElement.@version) })
+                }
+                setDefaultMetadata('dependencies', defaultDependencies)
+            }
         }
+
+        appendAndCreateParentIfNeeded('metadata', defaultMetadata)
 
         XmlUtil.serialize (root)
     }

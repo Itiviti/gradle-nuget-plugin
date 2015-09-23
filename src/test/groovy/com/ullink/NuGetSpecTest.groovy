@@ -161,8 +161,13 @@ class NuGetSpecTest {
         project.with {
             apply plugin: 'nuget'
         }
-
-        withMSBuildTask(project, 'bar', new File('c:\\folder\\bin\\bar.dll'))
+        def msbuildTask = new MSBuildTaskBuilder()
+                .withAssemblyName('bar')
+                .withFrameworkVersion('v3.5')
+                .withArtifact('c:\\folder\\bin\\bar.dll')
+                .withProjectFile('c:\\does not exist')
+                .build()
+        project.tasks.add(msbuildTask)
 
         project.nugetSpec {
             nuspec { }
@@ -184,23 +189,49 @@ class NuGetSpecTest {
         assertXMLEqual (expected, project.tasks.nugetSpec.generateNuspec())
     }
 
-    private static withMSBuildTask(Project project, String assemblyName, File artifact) {
-        def msbuildTask = [
-                getName: { 'msbuild' }
-        ] as Task
-        msbuildTask.metaClass.getMainProject = {
-            def mainProject = new Object()
-            mainProject.metaClass.getProperties = {
-                [
-                        'AssemblyName'          : assemblyName,
-                        'TargetFrameworkVersion': 'v3.5'
-                ]
-            }
-
-            mainProject.metaClass.getDotnetArtifacts = { [ artifact ] }
-            mainProject
+    @Test
+    public void generateNuspec_defaultDependenciesFromPackageConfig() {
+        Project project = ProjectBuilder.builder().withName('foo').build()
+        project.with {
+            apply plugin: 'nuget'
         }
 
-        project.tasks.add(msbuildTask)
+        project.nugetSpec {
+            nuspec {}
+        }
+
+        File.createTempDir().with { projectFolder ->
+            def msbuildTask = new MSBuildTaskBuilder()
+                    .withAssemblyName('bar')
+                    .withProjectFile(new File(projectFolder.path, 'bar.csproj'))
+                    .build()
+            project.tasks.add(msbuildTask)
+
+            File packageConfig = new File(projectFolder, 'packages.config')
+            packageConfig.createNewFile()
+            packageConfig.write(
+                    '''<?xml version="1.0" encoding="utf-8"?>
+                        <packages>
+                            <package id="depBar" version="0.2.3.4" targetFramework="net35" />
+                            <package id="depFoo" version="100.5.6" targetFramework="net35" />
+                        </packages>'''
+            )
+
+            def expected =
+                    '''
+                    <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+                        <metadata>
+                            <id>foo</id>
+                            <version>unspecified</version>
+                            <description>foo</description>
+                            <title>foo</title>
+                            <dependencies>
+                                <dependency id="depBar" version="0.2.3.4" />
+                                <dependency id="depFoo" version="100.5.6" />
+                            </dependencies>
+                        </metadata>
+                    </package>'''
+            assertXMLEqual(expected, project.tasks.nugetSpec.generateNuspec())
+        }
     }
 }
