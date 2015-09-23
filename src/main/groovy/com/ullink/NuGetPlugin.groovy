@@ -7,10 +7,11 @@ import org.gradle.api.plugins.BasePlugin
 class NuGetPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.apply plugin: 'base'
+        project.extensions.create('nuget', NuGetExtension)
 
-        def nuget = project.task('nugetRestore', type: NuGetRestore)
-        nuget.group = BasePlugin.BUILD_GROUP
-        nuget.description = 'Executes nuget package restore command.'
+        def nugetRestore = project.task('nugetRestore', type: NuGetRestore)
+        nugetRestore.group = BasePlugin.BUILD_GROUP
+        nugetRestore.description = 'Executes nuget package restore command.'
 
         def nugetSpec = project.task('nugetSpec', type: NuGetSpec)
         nugetSpec.group = BasePlugin.BUILD_GROUP
