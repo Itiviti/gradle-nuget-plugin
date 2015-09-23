@@ -21,7 +21,7 @@ public class BaseNuGet extends Exec {
         }
         else
         {
-            return new File(new File(new File(project.gradle.gradleUserHomeDir, 'caches'), 'nuget'), '2')
+            return new File(new File(new File(project.gradle.gradleUserHomeDir, 'caches'), 'nuget'), project.extensions.nuget.version)
         }
     }
 
@@ -37,7 +37,7 @@ public class BaseNuGet extends Exec {
         if (!localNuget.exists()) {
             if (!folder.isDirectory())
                 folder.mkdirs()
-            new URL('https://nuget.org/nuget.exe').withInputStream { i ->
+            new URL("https://dist.nuget.org/win-x86-commandline/v${project.extensions.nuget.version}/nuget.exe").withInputStream { i ->
                 localNuget.withOutputStream{ it << i }
             }
         }
