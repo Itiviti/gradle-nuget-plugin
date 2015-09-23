@@ -8,6 +8,7 @@ Plugin changelog
 * description is the project name if no description is provided
 * files are taken from artifacts of msbuild plugin and the target
 folder from target framework in csproj
+* take dependencies from packages.config
 
 2.9
 -------
