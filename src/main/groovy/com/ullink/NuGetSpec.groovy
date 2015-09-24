@@ -65,7 +65,7 @@ class NuGetSpec extends Exec {
         def final msbuildTaskExists = project.tasks.findByName('msbuild') != null
         def final packageConfigFileName = 'packages.config'
 
-        def GPathResult root = new XmlSlurper(false, false).parseText(nuspecString)
+        GPathResult root = new XmlSlurper(false, false).parseText(nuspecString)
 
         def defaultMetadata = []
         def setDefaultMetadata = { String node, value ->
