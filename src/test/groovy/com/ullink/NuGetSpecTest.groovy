@@ -25,7 +25,6 @@ class NuGetSpecTest {
             nuspec {
                 metadata {
                     id 'foo'
-                    title 'fooTitle'
                     delegate.description 'fooDescription'
                     frameworkAssemblies {
                         frameworkAssembly (assemblyName: "System.Web", targetFramework: "net40")
@@ -44,7 +43,6 @@ class NuGetSpecTest {
                 <id>foo</id>
                 <version>unspecified</version>
                 <description>fooDescription</description>
-                <title>fooTitle</title>
                 <frameworkAssemblies>
                     <frameworkAssembly assemblyName='System.Web' targetFramework='net40' />
                 </frameworkAssemblies>
@@ -64,7 +62,6 @@ class NuGetSpecTest {
             nuspec = [
                 metadata: [
                     id: 'foo',
-                    title: 'fooTitle',
                     description: 'fooDescription',
                     frameworkAssemblies: {
                         frameworkAssembly (assemblyName: "System.Web", targetFramework: "net40")
@@ -83,7 +80,6 @@ class NuGetSpecTest {
                 <id>foo</id>
                 <version>unspecified</version>
                 <description>fooDescription</description>
-                <title>fooTitle</title>
                 <frameworkAssemblies>
                     <frameworkAssembly assemblyName='System.Web' targetFramework='net40' />
                 </frameworkAssemblies>
@@ -116,7 +112,6 @@ class NuGetSpecTest {
                 <id>foo</id>
                 <version>2.1</version>
                 <description>fooDescription</description>
-                <title>foo</title>
             </metadata>
         </package>'''
         assertXMLEqual (expected, project.tasks.nugetSpec.generateNuspec())
@@ -137,7 +132,6 @@ class NuGetSpecTest {
                     id: 'bar',
                     description: 'barDescription',
                     version: '4.5',
-                    title: 'barTitle'
                 ]
             ]
         }
@@ -149,7 +143,6 @@ class NuGetSpecTest {
                 <id>bar</id>
                 <version>4.5</version>
                 <description>barDescription</description>
-                <title>barTitle</title>
             </metadata>
         </package>'''
         assertXMLEqual (expected, project.tasks.nugetSpec.generateNuspec())
@@ -180,7 +173,6 @@ class NuGetSpecTest {
                 <id>foo</id>
                 <version>unspecified</version>
                 <description>foo</description>
-                <title>foo</title>
             </metadata>
             <files>
                 <file src='c:\\folder\\bin\\bar.dll' target='lib/net35' />
@@ -214,6 +206,8 @@ class NuGetSpecTest {
                         <packages>
                             <package id="depBar" version="0.2.3.4" targetFramework="net35" />
                             <package id="depFoo" version="100.5.6" targetFramework="net35" />
+                            <package id="depBar2" version="1.2.3.4" developmentDependency="true" targetFramework="net35" />
+                            <package id="depFoo2" version="10.5.7" developmentDependency="false" targetFramework="net35" />
                         </packages>'''
             )
 
@@ -224,10 +218,10 @@ class NuGetSpecTest {
                             <id>foo</id>
                             <version>unspecified</version>
                             <description>foo</description>
-                            <title>foo</title>
                             <dependencies>
                                 <dependency id="depBar" version="0.2.3.4" />
                                 <dependency id="depFoo" version="100.5.6" />
+                                <dependency id="depFoo2" version="10.5.7" />
                             </dependencies>
                         </metadata>
                     </package>'''

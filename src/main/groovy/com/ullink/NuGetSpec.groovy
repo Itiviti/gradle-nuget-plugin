@@ -75,7 +75,6 @@ class NuGetSpec extends Exec {
         }
 
         setDefaultMetadata ('id', project.name)
-        setDefaultMetadata ('title', project.name)
         setDefaultMetadata ('version', project.version)
         setDefaultMetadata ('description', project.description ? project.description : project.name)
 
@@ -107,9 +106,13 @@ class NuGetSpec extends Exec {
             if (packageConfigFile.exists()) {
                 def defaultDependencies = []
                 def packages = new XmlParser().parse(packageConfigFile)
-                packages.package.each {
+                packages.package
+                        .findAll { !it.@developmentDependency.toString().toBoolean() }
+                        .each {
                     packageElement ->
-                        defaultDependencies.add({ dependency(id: packageElement.@id, version: packageElement.@version) })
+                        defaultDependencies.add({
+                            dependency(id: packageElement.@id, version: packageElement.@version)
+                        })
                 }
                 setDefaultMetadata('dependencies', defaultDependencies)
             }
