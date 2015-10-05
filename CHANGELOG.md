@@ -1,6 +1,10 @@
 Plugin changelog
 ====================
 
+2.11
+-------
+* handled packages with developmentDependency set to true and ignore them as a dependencies
+
 2.10
 -------
 
