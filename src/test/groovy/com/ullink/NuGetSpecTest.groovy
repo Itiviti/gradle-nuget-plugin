@@ -182,6 +182,43 @@ class NuGetSpecTest {
     }
 
     @Test
+    public void generateNuspec_withoutDefaultFilesAsTheyAreAlreadyProvided() {
+        Project project = ProjectBuilder.builder().withName('foo').build()
+        project.with {
+            apply plugin: 'nuget'
+        }
+        def msbuildTask = new MSBuildTaskBuilder()
+                .withAssemblyName('bar')
+                .withFrameworkVersion('v3.5')
+                .withArtifact('folder/bin/bar.dll')
+                .withProjectFile('folder/does not exist')
+                .build()
+        project.tasks.add(msbuildTask)
+
+        project.nugetSpec {
+            nuspec {
+                files {
+                    file(src: 'anotherLib.dll', target: 'lib/net45')
+                }
+            }
+        }
+
+        def expected =
+                '''
+        <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+            <metadata>
+                <id>foo</id>
+                <version>unspecified</version>
+                <description>foo</description>
+            </metadata>
+            <files>
+                <file src="anotherLib.dll" target="lib/net45" />
+            </files>
+        </package>'''
+        assertXMLEqual (expected, project.tasks.nugetSpec.generateNuspec())
+    }
+
+    @Test
     public void generateNuspec_defaultDependenciesFromPackageConfig() {
         Project project = ProjectBuilder.builder().withName('foo').build()
         project.with {
