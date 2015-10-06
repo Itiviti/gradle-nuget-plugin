@@ -4,6 +4,8 @@ Plugin changelog
 2.11
 -------
 * handled packages with developmentDependency set to true and ignore them as a dependencies
+* title is not provided anymore ('nuget pack' take the id value if the title is not provided)
+* The default nuspec files are provided only if it's not provided by nuspec task settings
 
 2.10
 -------

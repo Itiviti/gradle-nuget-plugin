@@ -92,13 +92,15 @@ class NuGetSpec extends Exec {
         if (msbuildTaskExists) {
             def mainProject = project.msbuild.mainProject
 
-            def defaultFiles = []
-            project.msbuild.mainProject.dotnetArtifacts.each {
-                artifact ->
-                    def fwkFolderVersion = mainProject.properties.TargetFrameworkVersion.toString().replace('v', '').replace('.', '')
-                    defaultFiles.add({ file(src: artifact.toString(), target: 'lib/net' + fwkFolderVersion) })
+            if(root.files.isEmpty()) {
+                def defaultFiles = []
+                project.msbuild.mainProject.dotnetArtifacts.each {
+                    artifact ->
+                        def fwkFolderVersion = mainProject.properties.TargetFrameworkVersion.toString().replace('v', '').replace('.', '')
+                        defaultFiles.add({ file(src: artifact.toString(), target: 'lib/net' + fwkFolderVersion) })
+                }
+                appendAndCreateParentIfNeeded('files', defaultFiles)
             }
-            appendAndCreateParentIfNeeded('files', defaultFiles)
 
             def packageConfigFile = new File(
                     new File(mainProject.projectFile).parentFile,
