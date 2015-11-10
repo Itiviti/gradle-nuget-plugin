@@ -92,7 +92,7 @@ class NuGetSpec extends Exec {
         if (msbuildTaskExists) {
             def mainProject = project.msbuild.mainProject
 
-            if(root.files.isEmpty()) {
+            if(root.files.file.isEmpty()) {
                 def defaultFiles = []
                 project.msbuild.mainProject.dotnetArtifacts.each {
                     artifact ->
