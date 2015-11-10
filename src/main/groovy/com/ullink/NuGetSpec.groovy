@@ -90,9 +90,11 @@ class NuGetSpec extends Exec {
         }
 
         if (msbuildTaskExists) {
+            project.logger.debug("Msbuild plugin detected. Will add default from it.")
             def mainProject = project.msbuild.mainProject
 
             if(root.files.file.isEmpty()) {
+                project.logger.debug("No files already defined in the NuGet spec, will add the ones from the msbuild task.")
                 def defaultFiles = []
                 project.msbuild.mainProject.dotnetArtifacts.each {
                     artifact ->
@@ -106,6 +108,7 @@ class NuGetSpec extends Exec {
                     new File(mainProject.projectFile).parentFile,
                     packageConfigFileName)
             if (packageConfigFile.exists()) {
+                project.logger.debug("Adding dependencies from packages.config")
                 def defaultDependencies = []
                 def packages = new XmlParser().parse(packageConfigFile)
                 packages.package
@@ -122,6 +125,8 @@ class NuGetSpec extends Exec {
 
         appendAndCreateParentIfNeeded('metadata', defaultMetadata)
 
+        project.logger.info("Generated NuGetSpec file with ${root.files.file.size()} files " +
+                "and ${root.dependencies.dependecy.size()} dependencies")
         XmlUtil.serialize (root)
     }
 }
