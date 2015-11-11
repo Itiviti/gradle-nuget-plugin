@@ -1,6 +1,10 @@
 Plugin changelog
 ====================
 
+2.12
+-------
+* Add the 'nuget-base' plugin, so we can use common NuGet configurations without having to have the default tasks created
+
 2.11
 -------
 * handled packages with developmentDependency set to true and ignore them as a dependencies
