@@ -1,6 +1,9 @@
 Plugin changelog
 ====================
 
+2.13
+-------
+
 2.12
 -------
 * Add the 'nuget-base' plugin, so we can use common NuGet configurations without having to have the default tasks created
