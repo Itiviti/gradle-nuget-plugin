@@ -90,7 +90,7 @@ class NuGetSpec extends Exec {
         }
 
         if (msbuildTaskExists) {
-            project.logger.debug("Msbuild plugin detected. Will add default from it.")
+            project.logger.debug("Msbuild plugin detected. Will add defaults from it.")
             def mainProject = project.msbuild.mainProject
 
             if(root.files.file.isEmpty()) {

@@ -6,26 +6,27 @@ import org.gradle.api.plugins.BasePlugin
 
 class NuGetPlugin implements Plugin<Project> {
     void apply(Project project) {
-        project.apply plugin: 'base'
-        project.extensions.create('nuget', NuGetExtension)
+        project.apply plugin: 'nuget-base'
 
-        def nugetRestore = project.task('nugetRestore', type: NuGetRestore)
-        nugetRestore.group = BasePlugin.BUILD_GROUP
-        nugetRestore.description = 'Executes nuget package restore command.'
+        project.task('nugetRestore', type: NuGetRestore) {
+            group = BasePlugin.BUILD_GROUP
+            description = 'Restores the configured config file or solution directory.'
+        }
 
-        def nugetSpec = project.task('nugetSpec', type: NuGetSpec)
-        nugetSpec.group = BasePlugin.BUILD_GROUP
-        nugetSpec.description = 'Generates nuspec file.'
+        def nugetSpec = project.task('nugetSpec', type: NuGetSpec) {
+            group = BasePlugin.BUILD_GROUP
+            description = 'Generates the NuGet spec file.'
+        }
 
-        def nugetPack = project.task('nugetPack', type: NuGetPack)
-        nugetPack.group = BasePlugin.BUILD_GROUP
-        nugetPack.description = 'Executes nuget pack command.'
-        nugetPack.dependsOn nugetSpec
+        def nugetPack = project.task('nugetPack', type: NuGetPack, dependsOn: nugetSpec) {
+            group = BasePlugin.BUILD_GROUP
+            description = 'Creates the NuGet package with the configured spec file.'
+        }
 
-        def nugetPush = project.task('nugetPush', type: NuGetPush)
-        nugetPush.group = BasePlugin.UPLOAD_GROUP
-        nugetPush.description = 'Executes nuget push command.'
-        nugetPush.dependsOn nugetPack
+        project.task('nugetPush', type: NuGetPush, dependsOn: nugetPack) {
+            group = BasePlugin.UPLOAD_GROUP
+            description = 'Pushes the NuGet package to the configured server url.'
+        }
     }
 }
 
