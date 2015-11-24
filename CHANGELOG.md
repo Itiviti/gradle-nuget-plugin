@@ -3,6 +3,7 @@ Plugin changelog
 
 2.13
 -------
+* Fix copyright system © in nuget spec.
 
 2.12
 -------

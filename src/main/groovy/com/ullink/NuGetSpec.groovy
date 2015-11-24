@@ -24,8 +24,7 @@ class NuGetSpec extends Exec {
     void generateNuspecFile() {
         def nuspecXml = generateNuspec()
         if (nuspecXml) {
-            def file = getNuspecFile()
-            file.write nuspecXml
+            getNuspecFile().write(nuspecXml, 'utf-8')
         }
     }
 
