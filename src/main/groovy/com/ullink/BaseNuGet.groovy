@@ -14,15 +14,11 @@ public class BaseNuGet extends Exec {
 
     private File getNugetHome(){
         def env = System.getenv()
-        def nugethome = env['NUGET_HOME']
-        if( nugethome != null)
-        {
-            return new File(nugethome)
-        }
+        def nugetHome = env['NUGET_HOME']
+        if(nugetHome != null)
+            return new File(nugetHome)
         else
-        {
-            return new File(new File(new File(project.gradle.gradleUserHomeDir, 'caches'), 'nuget'), '2')
-        }
+            return new File(new File(new File(project.gradle.gradleUserHomeDir, 'caches'), 'nuget'), project.extensions.nuget.version)
     }
 
     protected BaseNuGet(String command) {
@@ -37,10 +33,12 @@ public class BaseNuGet extends Exec {
         if (!localNuget.exists()) {
             if (!folder.isDirectory())
                 folder.mkdirs()
-            new URL('https://nuget.org/nuget.exe').withInputStream { i ->
-                localNuget.withOutputStream{ it << i }
-            }
+            def nugetUrl = "https://dist.nuget.org/win-x86-commandline/v${project.extensions.nuget.version}/nuget.exe"
+            project.logger.debug "Downloading NuGet from $nugetUrl ..."
+            new URL(nugetUrl).withInputStream { i -> localNuget.withOutputStream{ it << i } }
         }
+
+        project.logger.debug "Using NuGet from path $localNuget.path"
         if (isFamily(FAMILY_WINDOWS)) {
             executable localNuget
         } else {

@@ -30,6 +30,10 @@ class NuGetRestore extends BaseNuGet {
         if (solutionDirectory) args '-SolutionDirectory', solutionDirectory
         if (disableParallelProcessing) args '-DisableParallelProcessing'
 
+        project.logger.info "Restoring NuGet packages " +
+            (source ? "from $source" : '') +
+            (packagesConfigFile ? "for packages.config ($packagesConfigFile)": '') +
+            (solutionFile ? "for solution file ($solutionFile)" : '')
         super.exec()
     }
 

@@ -26,6 +26,12 @@ You can see this plugin being used for real on [il-repack](https://github.com/gl
     
     apply plugin:'nuget'
 
+    nuget {
+        // nuget.exe version to use, defaults to 3.2.0
+        // available versions can be found [here](https://dist.nuget.org/index.html)
+        version = '3.2.0'
+    }
+
     nugetSpec {
         // Array, Map and Closure could be used to generate nuspec XML, for details please check NuGetSpecTest 
         nuspec = [
