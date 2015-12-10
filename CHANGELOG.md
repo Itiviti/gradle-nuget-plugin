@@ -4,6 +4,8 @@ Plugin changelog
 2.13
 -------
 * Fix copyright system © in nuget spec.
+* NuGetRestore task now has a 'sources' parameter just like the NugetInstall task. It enables
+multiple sources to be set.
 
 2.12
 -------
