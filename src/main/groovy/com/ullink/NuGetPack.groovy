@@ -3,6 +3,7 @@ package com.ullink
 import groovy.util.XmlSlurper
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.XmlUtil
+import org.apache.commons.io.FilenameUtils
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
@@ -122,7 +123,18 @@ class NuGetPack extends BaseNuGet {
 
     File getPackageFile() {
         def spec = getNuspec()
-        def version = spec.metadata.version ?: project.version
-        new File(getDestinationDir(), spec.metadata.id.toString() + '.' + version + '.nupkg')
+        def version = spec?.metadata?.version ?: project.version
+        def id = spec?.metadata?.id?.toString() ?: getIdFromMsbuildTask()
+        new File(getDestinationDir(), id + '.' + version + '.nupkg')
+    }
+
+    String getIdFromMsbuildTask() {
+        def isInputProject = { csprojPath.equalsIgnoreCase(it.projectFile) }
+        def msbuildTask = project.tasks.find {
+            it.class.name.startsWith("com.ullink.Msbuild") && it.projects.values().any(isInputProject)
+        }
+        if (msbuildTask != null) {
+            FilenameUtils.removeExtension(msbuildTask.projects.values().find(isInputProject).dotnetAssemblyFile.name)
+        }
     }
 }

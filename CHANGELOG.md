@@ -3,9 +3,11 @@ Plugin changelog
 
 2.13
 -------
+* Default NuGet version used is 3.3.0.
 * Fix copyright system © in nuget spec.
 * NuGetRestore task now has a 'sources' parameter just like the NugetInstall task. It enables
 multiple sources to be set.
+* Fix getPackageFile() for NuGetPack task when used together with a csproj instead of a nuspec.
 
 2.12
 -------
