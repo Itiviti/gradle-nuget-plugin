@@ -305,4 +305,121 @@ class NuGetSpecTest {
             assertXMLEqual(expected, project.tasks.nugetSpec.generateNuspec())
         }
     }
+
+    @Test
+    public void generateNuspec_defaultDependenciesFromProjectJson() {
+        def project = newNugetProject()
+
+        project.nugetSpec {
+            nuspec {}
+        }
+
+        File.createTempDir().with { projectFolder ->
+            deleteOnExit()
+
+            def msbuildTask = new MSBuildTaskBuilder()
+                    .withAssemblyName('bar')
+                    .withProjectFile(new File(projectFolder.path, 'bar.csproj'))
+                    .build()
+            project.tasks.add(msbuildTask)
+
+            File projectJson = new File(projectFolder, 'project.json')
+            projectJson.createNewFile()
+            projectJson.write(
+                    '''{
+                          "dependencies": {
+                            "depBar": "0.2.3.4",
+                            "depFoo": "100.5.6",
+                            "depBar2": {"version": "1.2.3.4", "type":"build"},
+                            "depFoo2": {"version": "10.5.7", "type":"default"}
+                          },
+                          "frameworks": {
+                            "net35": {}
+                          },
+                          "runtimes": {
+                            "win": {}
+                          }
+                        }'''
+            )
+
+            def expected =
+                    '''
+                    <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+                        <metadata>
+                            <id>foo</id>
+                            <version>2.1</version>
+                            <description>fooDescription</description>
+                            <dependencies>
+                                <dependency id="depBar" version="0.2.3.4" />
+                                <dependency id="depFoo" version="100.5.6" />
+                                <dependency id="depFoo2" version="10.5.7" />
+                            </dependencies>
+                        </metadata>
+                    </package>'''
+            def nuspecGenerated = project.tasks.nugetSpec.generateNuspec()
+            assertXMLEqual(expected, nuspecGenerated)
+        }
+    }
+
+    @Test
+    public void generateNuspec_defaultDependenciesFromProjectJsonAndPackageConfig() {
+        def project = newNugetProject()
+
+        project.nugetSpec {
+            nuspec {}
+        }
+
+        File.createTempDir().with { projectFolder ->
+            deleteOnExit()
+
+            def msbuildTask = new MSBuildTaskBuilder()
+                    .withAssemblyName('bar')
+                    .withProjectFile(new File(projectFolder.path, 'bar.csproj'))
+                    .build()
+            project.tasks.add(msbuildTask)
+
+            File projectJson = new File(projectFolder, 'project.json')
+            projectJson.createNewFile()
+            projectJson.write(
+                    '''{
+                          "dependencies": {
+                            "depBar": "0.2.3.4",
+                            "depFoo": "100.5.6",
+                            "depBar2": {"version": "1.2.3.4", "type":"build"},
+                          },
+                          "frameworks": {
+                            "net35": {}
+                          },
+                          "runtimes": {
+                            "win": {}
+                          }
+                        }'''
+            )
+            File packageConfig = new File(projectFolder, 'packages.config')
+            packageConfig.createNewFile()
+            packageConfig.write(
+                    '''<?xml version="1.0" encoding="utf-8"?>
+                        <packages>
+                            <package id="depFoo2" version="10.5.7" developmentDependency="false" targetFramework="net35" />
+                        </packages>'''
+            )
+
+            def expected =
+                    '''
+                    <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+                        <metadata>
+                            <id>foo</id>
+                            <version>2.1</version>
+                            <description>fooDescription</description>
+                            <dependencies>
+                                <dependency id="depFoo2" version="10.5.7" />
+                                <dependency id="depBar" version="0.2.3.4" />
+                                <dependency id="depFoo" version="100.5.6" />
+                            </dependencies>
+                        </metadata>
+                    </package>'''
+            def nuspecGenerated = project.tasks.nugetSpec.generateNuspec()
+            assertXMLEqual(expected, nuspecGenerated)
+        }
+    }
 }
