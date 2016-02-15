@@ -10,9 +10,15 @@ class PackagesConfigParser implements NugetParser {
                 .each {
             packageElement ->
                 defaultDependencies.add({
-                    dependency(id: packageElement.@id, version: packageElement.@version)
+                    dependency(id: packageElement.@id, version: getVersion(packageElement))
                 })
         }
         return defaultDependencies;
+    }
+
+    String getVersion(Object element) {
+        if (element.@allowedVersions)
+            return element.@allowedVersions
+        return  element.@version
     }
 }
