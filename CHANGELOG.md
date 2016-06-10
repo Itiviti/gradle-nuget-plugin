@@ -1,5 +1,9 @@
 # gradle-nuget-plugin changelog
 
+## 2.15
+### Fixed
+* In nugetspec, do not access to mainProject when parseProject=false
+
 ## 2.13
 ### Changed
 * Default NuGet version used is 3.3.0.

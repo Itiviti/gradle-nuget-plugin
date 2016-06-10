@@ -16,6 +16,7 @@ class MSBuildTaskBuilder {
         mainProject.metaClass.getProperties = { mainProjectProperties }
         mainProject.metaClass.getDotnetArtifacts = { artifacts }
         msbuildTask.metaClass.getMainProject = { mainProject }
+        msbuildTask.metaClass.parseProject = true
     }
 
     public Task build() {
