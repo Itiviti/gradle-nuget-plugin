@@ -233,6 +233,27 @@ class NuGetSpecTest {
     }
 
     @Test
+    public void generateNuspec_noDefaultFilesFromCsprojIfParseProjectIsFalse() {
+        def project = newNugetWithMsbuildProject()
+        project.tasks.msbuild.metaClass.parseProject = false
+
+        project.nugetSpec {
+            nuspec { }
+        }
+
+        def expected =
+                '''
+        <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+            <metadata>
+                <id>foo</id>
+                <version>2.1</version>
+                <description>fooDescription</description>
+            </metadata>
+        </package>'''.replace('\\', File.separator)
+        assertXMLEqual (expected, project.tasks.nugetSpec.generateNuspec())
+    }
+
+    @Test
     public void generateNuspec_withoutDefaultFilesAsTheyAreAlreadyProvided() {
         def project = newNugetWithMsbuildProject()
 

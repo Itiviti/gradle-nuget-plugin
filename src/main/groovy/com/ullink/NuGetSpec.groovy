@@ -93,25 +93,31 @@ class NuGetSpec extends Exec {
         }
 
         if (msbuildTaskExists) {
-            project.logger.debug("Msbuild plugin detected. Will add defaults from it.")
-            def mainProject = project.msbuild.mainProject
+            project.logger.debug("Msbuild plugin detected")
+            if (project.msbuild.parseProject) {
+                project.logger.debug("Add defaults from Msbuild plugin")
+                def mainProject = project.msbuild.mainProject
 
-            if(root.files.file.isEmpty()) {
-                project.logger.debug("No files already defined in the NuGet spec, will add the ones from the msbuild task.")
-                def defaultFiles = []
-                project.msbuild.mainProject.dotnetArtifacts.each {
-                    artifact ->
-                        def fwkFolderVersion = mainProject.properties.TargetFrameworkVersion.toString().replace('v', '').replace('.', '')
-                        defaultFiles.add({ file(src: artifact.toString(), target: 'lib/net' + fwkFolderVersion) })
+                if (root.files.file.isEmpty()) {
+                    project.logger.debug("No files already defined in the NuGet spec, will add the ones from the msbuild task.")
+                    def defaultFiles = []
+                    project.msbuild.mainProject.dotnetArtifacts.each {
+                        artifact ->
+                            def fwkFolderVersion = mainProject.properties.TargetFrameworkVersion.toString().replace('v', '').replace('.', '')
+                            defaultFiles.add({ file(src: artifact.toString(), target: 'lib/net' + fwkFolderVersion) })
+                    }
+                    appendAndCreateParentIfNeeded('files', defaultFiles)
                 }
-                appendAndCreateParentIfNeeded('files', defaultFiles)
-            }
-            def dependencies = []
-            dependencies.addAll getDependencies(mainProject, packageConfigFileName, new PackagesConfigParser())
-            dependencies.addAll getDependencies(mainProject, projectJsonFileName, new ProjectJsonParser())
+                def dependencies = []
+                dependencies.addAll getDependencies(mainProject, packageConfigFileName, new PackagesConfigParser())
+                dependencies.addAll getDependencies(mainProject, projectJsonFileName, new ProjectJsonParser())
 
-            if (!dependencies.isEmpty())
-                setDefaultMetadata('dependencies', dependencies)
+                if (!dependencies.isEmpty())
+                    setDefaultMetadata('dependencies', dependencies)
+            }
+            else {
+                project.logger.debug("Msbuild plugin is configured with parseProject=false, no defaults added")
+            }
         }
 
         appendAndCreateParentIfNeeded('metadata', defaultMetadata)
