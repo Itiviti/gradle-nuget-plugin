@@ -2,7 +2,13 @@
 
 ## 2.15
 ### Fixed
-* In nugetspec, do not access to mainProject when parseProject=false
+* In `NugetSpec`, `mainProject` is not accessed anymore when if the linked msbuild task has `parseProject=false`.
+What this means is that no defaults will be added from the msbuild task.
+* The `NuGetPack` will provide a consistent parsed instance (namespace-unaware).
+
+## 2.14
+### Changed
+* Default NuGet version used is 3.4.3 (Fixes no_proxy behavior).
 
 ## 2.13
 ### Changed
