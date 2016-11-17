@@ -1,5 +1,7 @@
 # gradle-nuget-plugin changelog
 
+## 2.16
+
 ## 2.15
 ### Fixed
 * In `NugetSpec`, `mainProject` is not accessed anymore when if the linked msbuild task has `parseProject=false`.
