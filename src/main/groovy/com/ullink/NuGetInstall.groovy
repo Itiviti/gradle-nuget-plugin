@@ -5,7 +5,7 @@ class NuGetInstall extends BaseNuGet {
     def packageId
     def packagesConfigFile
 
-    def sources = []
+    def sources = [] as Set
     def outputDirectory
     def version
     def includeVersionInPath = true

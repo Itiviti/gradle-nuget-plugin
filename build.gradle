@@ -1,6 +1,7 @@
 plugins {
     id 'nu.studer.plugindev' version '1.0.3'
     id "com.jfrog.bintray" version "1.2"
+    id 'net.researchgate.release' version '2.3.4'
 }
 
 group = 'com.ullink.gradle'
@@ -12,6 +13,7 @@ description 'Gradle plugin for NuGet, to package, upload artifacts and restore p
 dependencies {
     testCompile 'junit:junit:4.11'
     testCompile 'xmlunit:xmlunit:1.6'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.3'
 }
 
 bintray {
@@ -37,3 +39,5 @@ plugindev {
     projectInceptionYear '2012'
     done()
 }
+
+project.tasks.afterReleaseBuild.dependsOn project.tasks.bintrayUpload

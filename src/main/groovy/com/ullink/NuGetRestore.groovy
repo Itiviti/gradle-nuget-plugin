@@ -5,7 +5,7 @@ class NuGetRestore extends BaseNuGet {
     def solutionFile
     def packagesConfigFile
 
-    def source
+    def sources = [] as Set
     def noCache = false
     def configFile
     def requireConsent = false
@@ -17,12 +17,20 @@ class NuGetRestore extends BaseNuGet {
         super('restore')
     }
 
+    /**
+     * Only provided for backward compatibility. Uses 'sources' instead
+     */
+    def setSource(String source) {
+        sources.clear()
+        sources.add(source)
+    }
+
     @Override
     void exec() {
         if (packagesConfigFile) args packagesConfigFile
         if (solutionFile) args solutionFile
 
-        if (source) args '-Source', source
+        if (!sources.isEmpty()) args '-Source', sources.join(';')
         if (noCache) args '-NoCache'
         if (configFile) args '-ConfigFile', configFile
         if (requireConsent) args '-RequireConsent'
@@ -31,7 +39,7 @@ class NuGetRestore extends BaseNuGet {
         if (disableParallelProcessing) args '-DisableParallelProcessing'
 
         project.logger.info "Restoring NuGet packages " +
-            (source ? "from $source" : '') +
+            (sources ? "from $sources" : '') +
             (packagesConfigFile ? "for packages.config ($packagesConfigFile)": '') +
             (solutionFile ? "for solution file ($solutionFile)" : '')
         super.exec()

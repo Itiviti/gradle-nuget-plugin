@@ -1,5 +1,8 @@
 package com.ullink
 
+import com.ullink.packagesparser.NugetParser
+import com.ullink.packagesparser.PackagesConfigParser
+import com.ullink.packagesparser.ProjectJsonParser
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.XmlUtil
 import org.gradle.api.tasks.Exec
@@ -63,6 +66,7 @@ class NuGetSpec extends Exec {
     String supplementDefaultValueOnNuspec(String nuspecString) {
         def final msbuildTaskExists = project.tasks.findByName('msbuild') != null
         def final packageConfigFileName = 'packages.config'
+        def final projectJsonFileName = 'project.json'
 
         GPathResult root = new XmlSlurper(false, false).parseText(nuspecString)
 
@@ -89,36 +93,30 @@ class NuGetSpec extends Exec {
         }
 
         if (msbuildTaskExists) {
-            project.logger.debug("Msbuild plugin detected. Will add defaults from it.")
-            def mainProject = project.msbuild.mainProject
+            project.logger.debug("Msbuild plugin detected")
+            if (project.msbuild.parseProject) {
+                project.logger.debug("Add defaults from Msbuild plugin")
+                def mainProject = project.msbuild.mainProject
 
-            if(root.files.file.isEmpty()) {
-                project.logger.debug("No files already defined in the NuGet spec, will add the ones from the msbuild task.")
-                def defaultFiles = []
-                project.msbuild.mainProject.dotnetArtifacts.each {
-                    artifact ->
-                        def fwkFolderVersion = mainProject.properties.TargetFrameworkVersion.toString().replace('v', '').replace('.', '')
-                        defaultFiles.add({ file(src: artifact.toString(), target: 'lib/net' + fwkFolderVersion) })
+                if (root.files.file.isEmpty()) {
+                    project.logger.debug("No files already defined in the NuGet spec, will add the ones from the msbuild task.")
+                    def defaultFiles = []
+                    project.msbuild.mainProject.dotnetArtifacts.each {
+                        artifact ->
+                            def fwkFolderVersion = mainProject.properties.TargetFrameworkVersion.toString().replace('v', '').replace('.', '')
+                            defaultFiles.add({ file(src: artifact.toString(), target: 'lib/net' + fwkFolderVersion) })
+                    }
+                    appendAndCreateParentIfNeeded('files', defaultFiles)
                 }
-                appendAndCreateParentIfNeeded('files', defaultFiles)
+                def dependencies = []
+                dependencies.addAll getDependencies(mainProject, packageConfigFileName, new PackagesConfigParser())
+                dependencies.addAll getDependencies(mainProject, projectJsonFileName, new ProjectJsonParser())
+
+                if (!dependencies.isEmpty())
+                    setDefaultMetadata('dependencies', dependencies)
             }
-
-            def packageConfigFile = new File(
-                    new File(mainProject.projectFile).parentFile,
-                    packageConfigFileName)
-            if (packageConfigFile.exists()) {
-                project.logger.debug("Adding dependencies from packages.config")
-                def defaultDependencies = []
-                def packages = new XmlParser().parse(packageConfigFile)
-                packages.package
-                        .findAll { !it.@developmentDependency.toString().toBoolean() }
-                        .each {
-                    packageElement ->
-                        defaultDependencies.add({
-                            dependency(id: packageElement.@id, version: packageElement.@version)
-                        })
-                }
-                setDefaultMetadata('dependencies', defaultDependencies)
+            else {
+                project.logger.debug("Msbuild plugin is configured with parseProject=false, no defaults added")
             }
         }
 
@@ -127,5 +125,16 @@ class NuGetSpec extends Exec {
         project.logger.info("Generated NuGetSpec file with ${root.files.file.size()} files " +
                 "and ${root.dependencies.dependecy.size()} dependencies")
         XmlUtil.serialize (root)
+    }
+
+    Collection getDependencies(def mainProject, String fileName, NugetParser parser) {
+        def file = new File(
+                new File(mainProject.projectFile).parentFile,
+                fileName)
+        if (file.exists()) {
+            project.logger.debug("Adding dependencies from ${fileName}")
+            return parser.getDependencies(file)
+        }
+        return []
     }
 }

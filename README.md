@@ -27,9 +27,9 @@ You can see this plugin being used for real on [il-repack](https://github.com/gl
     apply plugin:'nuget'
 
     nuget {
-        // nuget.exe version to use, defaults to 3.2.0
+        // nuget.exe version to use, defaults to 3.3.0
         // available versions can be found [here](https://dist.nuget.org/index.html)
-        version = '3.2.0'
+        version = '3.3.0'
     }
 
     nugetSpec {
