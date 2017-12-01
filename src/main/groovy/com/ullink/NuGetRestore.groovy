@@ -1,5 +1,8 @@
 package com.ullink
 
+import com.ullink.util.GradleHelper
+import org.gradle.api.UnknownTaskException
+
 class NuGetRestore extends BaseNuGet {
 
     def solutionFile
@@ -12,6 +15,7 @@ class NuGetRestore extends BaseNuGet {
     def packagesDirectory
     def solutionDirectory
     def disableParallelProcessing = false
+    def msBuildVersion
 
     NuGetRestore() {
         super('restore')
@@ -37,6 +41,8 @@ class NuGetRestore extends BaseNuGet {
         if (packagesDirectory) args '-PackagesDirectory', packagesDirectory
         if (solutionDirectory) args '-SolutionDirectory', solutionDirectory
         if (disableParallelProcessing) args '-DisableParallelProcessing'
+        if (!msBuildVersion) msBuildVersion = GradleHelper.getPropertyFromTask(project, 'version', 'msbuild')
+        if (msBuildVersion) args '-MsBuildVersion', msBuildVersion
 
         project.logger.info "Restoring NuGet packages " +
             (sources ? "from $sources" : '') +

@@ -1,5 +1,6 @@
 package com.ullink
 
+import com.ullink.util.GradleHelper
 import groovy.util.slurpersupport.GPathResult
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.plugins.BasePlugin
@@ -21,6 +22,7 @@ class NuGetPack extends BaseNuGet {
     def includeEmptyDirectories = true
     def properties = [:]
     def minClientVersion
+    def msBuildVersion
 
     NuGetPack() {
         super('pack')
@@ -63,7 +65,8 @@ class NuGetPack extends BaseNuGet {
         if (!includeEmptyDirectories) args '-ExcludeEmptyDirectories'
         if (!properties.isEmpty()) args '-Properties', properties.collect({ k, v -> "$k=$v" }).join(';')
         if (minClientVersion) args '-MinClientVersion', minClientVersion
-
+        if (!msBuildVersion) msBuildVersion = GradleHelper.getPropertyFromTask(project, 'version', 'msbuild')
+        if (msBuildVersion) args '-MsBuildVersion', msBuildVersion
         super.exec()
     }
 
