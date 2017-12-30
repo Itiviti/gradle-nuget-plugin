@@ -1,6 +1,10 @@
 
 package com.ullink
 
-class NuGetPush extends BaseNuGet {
+class NuGetSources extends BaseNuGet {
+  
+   NuGetSources() {
+        super('sources')
+    }
 
 }
