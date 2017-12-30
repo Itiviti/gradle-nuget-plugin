@@ -6,6 +6,14 @@ class NuGetSources extends BaseNuGet {
         add, remove, enable, disable, list
     }
 
+    Operation operation    
+    def sourceName
+    def sourceUrl
+    def username
+    def password
+    def configFile
+    def storePaswordInClearText = false
+
     NuGetSources() {
         super('sources')
         project.afterEvaluate{
@@ -18,14 +26,6 @@ class NuGetSources extends BaseNuGet {
         }
     }
 
-    Operation operation    
-    def sourceName
-    def sourceUrl
-    def username
-    def password
-    def configFile
-    def storePaswordInClearText = false
-
     @Override
     void exec() {
         args operation
@@ -37,5 +37,4 @@ class NuGetSources extends BaseNuGet {
         if (storePaswordInClearText) args '-StorePaswordInClearText'
         super.exec()
     }
-
 }
