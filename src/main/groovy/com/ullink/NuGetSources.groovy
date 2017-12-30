@@ -1,20 +1,18 @@
 package com.ullink
 
 class NuGetSources extends BaseNuGet {
+    
     enum Operation{
         add, remove, enable, disable
     }
-    enum Verbosity{
-        normal, quiet, detailed
-    }
+
     NuGetSources() {
         super('sources')
     }
 
-    Operation operation
-    Verbosity verbosity
-    def name
-    def source
+    Operation operation    
+    def sourceName
+    def sourceUrl
     def username
     def password
     def configFile
@@ -23,12 +21,11 @@ class NuGetSources extends BaseNuGet {
     @Override
     void exec() {
         args operation
-        if (name) args '-Name', name
-        if (source) args '-Source',source        
+        if (sourceName) args '-Name', sourceName
+        if (sourceUrl) args '-Source',sourceUrl        
         if (username) args '-UserName', name
         if (password) args '-Passsword', name
         if (configFile) args '-ConfigFile', name
-        if (verbosity) args '-Verbosity', verbosity
         if (storePaswordInClearText) args '-StorePaswordInClearText'
         super.exec()
     }
