@@ -78,7 +78,7 @@ You can see this plugin being used for real on [il-repack](https://github.com/gl
     }
 
     Where
-     - operation - could be add, remove, enable, disable
+     - operation - could be add, remove, enable, disable and list
      - sourceName - name of the nuget feed
      - sourceUrl - url of the nuget feed
 

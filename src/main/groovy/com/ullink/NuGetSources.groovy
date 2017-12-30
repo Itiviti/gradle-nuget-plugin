@@ -3,7 +3,7 @@ package com.ullink
 class NuGetSources extends BaseNuGet {
     
     enum Operation{
-        add, remove, enable, disable
+        add, remove, enable, disable, list
     }
 
     NuGetSources() {
@@ -12,7 +12,7 @@ class NuGetSources extends BaseNuGet {
             if(!operation){
                 throw new GradleException('Operation not specified for NuGetSources task.')
             }
-            if(!sourceName){
+            if(operation != Operation.list && !sourceName){
                 throw new GradleException('SourceName not specified for NuGetSources task.')
             }
         }
