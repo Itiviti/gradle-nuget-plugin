@@ -72,13 +72,15 @@ You can see this plugin being used for real on [il-repack](https://github.com/gl
     - Sample usage:
 
     nugetSources {
-        operation = remove
-        name = "localNuGetFeed"        
+        operation = 'add'
+        sourceName = 'localNuGetFeed'
+        sourceUrl = 'http://foo.com'
     }
 
     Where
      - operation - could be add, remove, enable, disable
-     - name - name of the feed
+     - sourceName - name of the nuget feed
+     - sourceUrl - url of the nuget feed
 
 # See also
 
