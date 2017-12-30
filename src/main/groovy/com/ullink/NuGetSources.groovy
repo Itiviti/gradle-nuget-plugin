@@ -18,7 +18,7 @@ class NuGetSources extends BaseNuGet {
     def username
     def password
     def configFile
-    bool storePaswordInClearText
+    def storePaswordInClearText = false
 
     @Override
     void exec() {

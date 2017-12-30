@@ -27,6 +27,11 @@ class NuGetPlugin implements Plugin<Project> {
             group = BasePlugin.UPLOAD_GROUP
             description = 'Pushes the NuGet package to the configured server url.'
         }
+
+        project.task('nugetSources', type: NuGetSources) {
+            group = BasePlugin.UPLOAD_GROUP
+            description = 'Adds, removes, enables and disables nuget sources (feeds).'
+        }
     }
 }
 
