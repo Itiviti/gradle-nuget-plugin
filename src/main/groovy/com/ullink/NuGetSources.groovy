@@ -1,5 +1,7 @@
 package com.ullink
 
+import org.gradle.api.GradleException
+
 class NuGetSources extends BaseNuGet {
     
     enum Operation{
