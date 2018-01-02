@@ -29,7 +29,6 @@ class NuGetPlugin implements Plugin<Project> {
         }
 
         project.task('nugetSources', type: NuGetSources) {
-            group = BasePlugin.UPLOAD_GROUP
             description = 'Adds, removes, enables, disables and lists nuget sources (feeds).'
         }
     }
