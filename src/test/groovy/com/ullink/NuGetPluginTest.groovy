@@ -22,6 +22,7 @@ class NuGetPluginTest {
         assertTrue(project.tasks.nugetPack instanceof NuGetPack)
         assertTrue(project.tasks.nugetPush instanceof NuGetPush)
         assertTrue(project.tasks.nugetSpec instanceof NuGetSpec)
+        assertTrue(project.tasks.nugetSources instanceof NuGetSources)
     }
 
     @Test

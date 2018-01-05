@@ -65,6 +65,23 @@ You can see this plugin being used for real on [il-repack](https://github.com/gl
      - solutionDirectory - could either contain the .sln file or the repositories.config file
      - packagesDirectory - used only if a folder with repositories.config is used
 
+## nugetSources
+
+    Nuget sources is used to add, remove, enable, disable nuget feeds
+
+    - Sample usage:
+
+    nugetSources {
+        operation = 'add'
+        sourceName = 'localNuGetFeed'
+        sourceUrl = 'http://foo.com'
+    }
+
+    Where
+     - operation - could be add, remove, enable, disable and list
+     - sourceName - name of the nuget feed
+     - sourceUrl - url of the nuget feed
+
 # See also
 
 [Gradle Msbuild plugin](https://github.com/Ullink/gradle-msbuild-plugin) - Allows to build VS projects & solutions.
