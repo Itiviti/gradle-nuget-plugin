@@ -14,7 +14,7 @@ class NuGetSources extends BaseNuGet {
     def username
     def password
     def configFile
-    def storePaswordInClearText = false
+    def storePasswordInClearText = false
 
     NuGetSources() {
         super('sources')
@@ -33,10 +33,10 @@ class NuGetSources extends BaseNuGet {
         args operation
         if (sourceName) args '-Name', sourceName
         if (sourceUrl) args '-Source', sourceUrl        
-        if (username) args '-UserName', name
+        if (username) args '-UserName', username
         if (password) args '-Passsword', password
         if (configFile) args '-ConfigFile', configFile
-        if (storePaswordInClearText) args '-StorePaswordInClearText'
+        if (storePasswordInClearText) args '-StorePasswordInClearText'
         super.exec()
     }
 }
