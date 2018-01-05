@@ -34,7 +34,7 @@ class NuGetSources extends BaseNuGet {
         if (sourceName) args '-Name', sourceName
         if (sourceUrl) args '-Source', sourceUrl        
         if (username) args '-UserName', username
-        if (password) args '-Passsword', password
+        if (password) args '-Password', password
         if (configFile) args '-ConfigFile', configFile
         if (storePasswordInClearText) args '-StorePasswordInClearText'
         super.exec()
