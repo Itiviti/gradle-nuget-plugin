@@ -1,6 +1,12 @@
 # gradle-nuget-plugin changelog
 
 ## 2.16
+### Added
+* Added "update" operation on nuget sources
+
+### Changed
+* Default NuGet version used is 4.4.0
+
 
 ## 2.15
 ### Fixed

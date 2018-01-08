@@ -5,7 +5,7 @@ import org.gradle.api.GradleException
 class NuGetSources extends BaseNuGet {
     
     enum Operation{
-        add, remove, enable, disable, list
+        add, remove, enable, disable, list, update
     }
 
     Operation operation    
