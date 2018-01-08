@@ -10,9 +10,10 @@ You can see this plugin being used for real on [il-repack](https://github.com/gl
 
 ## nugetSpec
 
-    The task is to generate nuspec file by custom configuration
+The task is to generate nuspec file by custom configuration.
 
-    - Sample usage:
+Sample usage:
+
 ```groovy
 buildscript {
     repositories {
@@ -20,11 +21,11 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.ullink.gradle:gradle-nuget-plugin:2.5"
+        classpath "com.ullink.gradle:gradle-nuget-plugin:2.16"
     }
 }
 
-apply plugin:'nuget'
+apply plugin: 'nuget'
 
 nuget {
     // nuget.exe version to use, defaults to 4.4.0
@@ -53,38 +54,46 @@ nugetSpec {
 
 ## nugetRestore
 
-    Nuget restore is used to retrieve missing packages before starting the build
+Nuget restore is used to retrieve missing packages before starting the build.
 
-    - Sample usage:
+Sample usage:
+
 ```groovy
 nugetRestore {
     solutionDirectory = path\to\project
     packagesDirectory = location\for\package\restore
 }
+```
 
 Where
  - solutionDirectory - could either contain the .sln file or the repositories.config file
  - packagesDirectory - used only if a folder with repositories.config is used
-```
 
 ## nugetSources
 
-    Nuget sources is used to add, remove, enable, disable nuget feeds
+Nuget sources is used to add, remove, update, enable, disable nuget feeds.
 
-    - Sample usage:
+Sample usage:
 
 ```groovy
 nugetSources {
     operation = 'add'
     sourceName = 'localNuGetFeed'
     sourceUrl = 'http://foo.com'
+    username = 'optional username'
+    password = 'optional password'
+    configFile = 'nuget.config'
 }
+```
 
 Where
- - operation - could be add, remove, enable, disable and list
+ - operation - could be add, remove, update, enable, disable and list
  - sourceName - name of the nuget feed
  - sourceUrl - url of the nuget feed
-```
+ - username - optional username for nuget sources that require http basic authentication
+ - password - optional password for nuget sources that require http basic authentication
+ - configFile - optional NuGet.config file to modify
+ 
   
 # See also
 
