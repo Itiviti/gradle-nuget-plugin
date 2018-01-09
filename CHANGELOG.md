@@ -2,11 +2,11 @@
 
 ## 2.16
 ### Added
-* Added "update" operation on nuget sources
+* Added nuget sources task ([#58](https://github.com/Ullink/gradle-nuget-plugin/pull/58))
+* Provide `-MsBuildVersion` param to nuget pack/restore ([#56](https://github.com/Ullink/gradle-nuget-plugin/issues/56)/[#57](https://github.com/Ullink/gradle-nuget-plugin/pull/57))
 
 ### Changed
-* Default NuGet version used is 4.4.0
-
+* Default NuGet version used is 4.4.0 ([#59](https://github.com/Ullink/gradle-nuget-plugin/pull/59))
 
 ## 2.15
 ### Fixed
