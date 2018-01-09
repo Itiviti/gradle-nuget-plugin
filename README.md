@@ -10,78 +10,91 @@ You can see this plugin being used for real on [il-repack](https://github.com/gl
 
 ## nugetSpec
 
-    The task is to generate nuspec file by custom configuration
+The task is to generate nuspec file by custom configuration.
 
-    - Sample usage:
+Sample usage:
 
-    buildscript {
-        repositories {
-          mavenCentral()
-        }
-    
-        dependencies {
-            classpath "com.ullink.gradle:gradle-nuget-plugin:2.5"
-        }
-    }
-    
-    apply plugin:'nuget'
-
-    nuget {
-        // nuget.exe version to use, defaults to 3.3.0
-        // available versions can be found [here](https://dist.nuget.org/index.html)
-        version = '3.3.0'
+```groovy
+buildscript {
+    repositories {
+      mavenCentral()
     }
 
-    nugetSpec {
-        // Array, Map and Closure could be used to generate nuspec XML, for details please check NuGetSpecTest 
-        nuspec = [
-            metadata: [
-                title:          'project title',
-                authors:        'Francois Valdy',
-                // id:          default is project.name
-                // version:     default is project.version
-                // description: default is project.description
-                // ...
-            ]
-            files: [
-                { file (src: 'somefile1', target: 'tools') },
-                { file (src: 'somefile2', target: 'tools') }
-            ]
+    dependencies {
+        classpath "com.ullink.gradle:gradle-nuget-plugin:2.16"
+    }
+}
+
+apply plugin: 'nuget'
+
+nuget {
+    // nuget.exe version to use, defaults to 4.4.0
+    // available versions can be found [here](https://dist.nuget.org/index.html)
+    version = '4.4.0'
+}
+
+nugetSpec {
+    // Array, Map and Closure could be used to generate nuspec XML, for details please check NuGetSpecTest 
+    nuspec = [
+        metadata: [
+            title:          'project title',
+            authors:        'Francois Valdy',
+            // id:          default is project.name
+            // version:     default is project.version
+            // description: default is project.description
+            // ...
         ]
-    }
+        files: [
+            { file (src: 'somefile1', target: 'tools') },
+            { file (src: 'somefile2', target: 'tools') }
+        ]
+    ]
+}
+```
 
 ## nugetRestore
 
-    Nuget restore is used to retrieve missing packages before starting the build
+Nuget restore is used to retrieve missing packages before starting the build.
 
-    - Sample usage:
+Sample usage:
 
-    nugetRestore {
-        solutionDirectory = path\to\project
-        packagesDirectory = location\for\package\restore
-    }
+```groovy
+nugetRestore {
+    solutionDirectory = path\to\project
+    packagesDirectory = location\for\package\restore
+}
+```
 
-    Where
-     - solutionDirectory - could either contain the .sln file or the repositories.config file
-     - packagesDirectory - used only if a folder with repositories.config is used
+Where
+ - solutionDirectory - could either contain the .sln file or the repositories.config file
+ - packagesDirectory - used only if a folder with repositories.config is used
 
 ## nugetSources
 
-    Nuget sources is used to add, remove, enable, disable nuget feeds
+Nuget sources is used to add, remove, update, enable, disable nuget feeds.
 
-    - Sample usage:
+Sample usage:
 
-    nugetSources {
-        operation = 'add'
-        sourceName = 'localNuGetFeed'
-        sourceUrl = 'http://foo.com'
-    }
+```groovy
+nugetSources {
+    operation = 'add'
+    sourceName = 'localNuGetFeed'
+    sourceUrl = 'http://foo.com'
+    username = 'optional username'
+    password = 'optional password'
+    configFile = 'nuget.config'
+}
+```
 
-    Where
-     - operation - could be add, remove, enable, disable and list
-     - sourceName - name of the nuget feed
-     - sourceUrl - url of the nuget feed
-
+Where
+ - operation - could be add, remove, update, enable, disable and list
+ - sourceName - name of the nuget feed
+ - sourceUrl - url of the nuget feed
+ - username - optional username for nuget sources that require http basic authentication
+ - password - optional password for nuget sources that require http basic authentication
+ - configFile - optional NuGet.config file to modify
+ 
+  
 # See also
 
 [Gradle Msbuild plugin](https://github.com/Ullink/gradle-msbuild-plugin) - Allows to build VS projects & solutions.

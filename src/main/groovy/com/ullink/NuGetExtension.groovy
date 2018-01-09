@@ -1,5 +1,5 @@
 package com.ullink
 
 class NuGetExtension {
-    String version = '3.4.4'
+    String version = '4.4.0'
 }
