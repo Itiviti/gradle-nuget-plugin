@@ -1,15 +1,16 @@
 package com.ullink
 
 
-class NugetClear  extends BaseNuGet{
+class NugetLocalsClear  extends BaseNuGet{
     def all = false
 
-    NugetClear() {
-        super('locals -clear')
+    NugetLocalsClear() {
+        super('locals')
     }
-    
+
     @Override
     void exec() {
+        args '-clear'
         if(all) args 'all'
         super.exec()
     }
