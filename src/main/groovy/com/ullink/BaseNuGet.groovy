@@ -9,13 +9,15 @@ public class BaseNuGet extends Exec {
 
     String verbosity
 
+    String nugetExePath
+
     public BaseNuGet() {
     }
 
-    private File getNugetHome(){
+    private File getNugetHome() {
         def env = System.getenv()
         def nugetHome = env['NUGET_HOME']
-        if(nugetHome != null)
+        if (nugetHome != null)
             return new File(nugetHome)
         else
             return new File(new File(new File(project.gradle.gradleUserHomeDir, 'caches'), 'nuget'), project.extensions.nuget.version)
@@ -28,16 +30,7 @@ public class BaseNuGet extends Exec {
 
     @Override
     void exec() {
-        def folder = getNugetHome()
-        def localNuget = new File(folder, NUGET_EXE)
-        if (!localNuget.exists()) {
-            if (!folder.isDirectory())
-                folder.mkdirs()
-            def exeName = project.extensions.nuget.version < '3.4.4' ? 'nuget.exe' : 'NuGet.exe'
-            def nugetUrl = "https://dist.nuget.org/win-x86-commandline/v${project.extensions.nuget.version}/${exeName}"
-            project.logger.debug "Downloading NuGet from $nugetUrl ..."
-            new URL(nugetUrl).withInputStream { i -> localNuget.withOutputStream{ it << i } }
-        }
+        File localNuget = getNugetExeLocalPath()
 
         project.logger.debug "Using NuGet from path $localNuget.path"
         if (isFamily(FAMILY_WINDOWS)) {
@@ -51,6 +44,52 @@ public class BaseNuGet extends Exec {
         args '-Verbosity', (verbosity ?: getNugetVerbosity())
 
         super.exec()
+    }
+
+    private File getNugetExeLocalPath() {
+        File localNuget
+
+        if (nugetExePath != null && !nugetExePath.empty && !nugetExePath.startsWith("http")) {
+            localNuget = new File(nugetExePath)
+
+            if (localNuget.exists()) {
+                return localNuget
+            }
+
+            throw new IllegalStateException("Unable to find nuget by path $nugetExePath (please check property 'nugetExePath')")
+        }
+
+        def folder = getNugetHome()
+        localNuget = new File(folder, NUGET_EXE)
+
+        if (!localNuget.exists()) {
+            if (!folder.isDirectory())
+                folder.mkdirs()
+
+            def nugetUrl = getNugetDownloadLink()
+
+            project.logger.info "Downloading NuGet from $nugetUrl ..."
+
+            new URL(nugetUrl).withInputStream {
+                inputStream ->
+                    localNuget.withOutputStream { outputStream ->
+                        outputStream << inputStream
+                    }
+            }
+        }
+        localNuget
+    }
+
+    private String getNugetDownloadLink() {
+        if (nugetExePath != null && !nugetExePath.empty && nugetExePath.startsWith("http")) {
+            project.logger.debug("Nuget url path is resolved from property 'nugetExePath'")
+
+            return nugetExePath
+        }
+
+        def exeName = project.extensions.nuget.version < '3.4.4' ? 'nuget.exe' : 'NuGet.exe'
+
+        return "https://dist.nuget.org/win-x86-commandline/v${project.extensions.nuget.version}/${exeName}"
     }
 
     private String getNugetVerbosity() {
