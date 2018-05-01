@@ -2,6 +2,8 @@ package com.ullink
 
 import org.gradle.api.tasks.Exec
 
+import java.nio.file.Paths
+
 import static org.apache.tools.ant.taskdefs.condition.Os.*
 
 public class BaseNuGet extends Exec {
@@ -17,10 +19,17 @@ public class BaseNuGet extends Exec {
     private File getNugetHome() {
         def env = System.getenv()
         def nugetHome = env['NUGET_HOME']
-        if (nugetHome != null)
+        if (nugetHome != null) {
             return new File(nugetHome)
-        else
-            return new File(new File(new File(project.gradle.gradleUserHomeDir, 'caches'), 'nuget'), project.extensions.nuget.version)
+        } else {
+            def nugetCacheFolder = Paths.get(
+                    project.gradle.gradleUserHomeDir.absolutePath,
+                    'caches',
+                    'nuget',
+                    project.extensions.nuget.version.toString())
+
+            return nugetCacheFolder.toFile()
+        }
     }
 
     protected BaseNuGet(String command) {
