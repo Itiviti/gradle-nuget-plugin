@@ -31,6 +31,11 @@ nuget {
     // nuget.exe version to use, defaults to 4.4.0
     // available versions can be found [here](https://dist.nuget.org/index.html)
     version = '4.4.0'
+
+    // Optionally you can set nuget location, which will be used for download:
+    nugetExePath = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+    // Or nuget file, which is already downloaded previously:
+    nugetExePath = "C:\\Tools\\Nuget\\nuget.exe"
 }
 
 nugetSpec {
