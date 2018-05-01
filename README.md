@@ -21,7 +21,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.ullink.gradle:gradle-nuget-plugin:2.16"
+        classpath "com.ullink.gradle:gradle-nuget-plugin:2.17"
     }
 }
 
