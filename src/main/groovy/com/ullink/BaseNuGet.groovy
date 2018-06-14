@@ -33,8 +33,14 @@ public class BaseNuGet extends Exec {
         if (!localNuget.exists()) {
             if (!folder.isDirectory())
                 folder.mkdirs()
-            def exeName = project.extensions.nuget.version < '3.4.4' ? 'nuget.exe' : 'NuGet.exe'
-            def nugetUrl = "https://dist.nuget.org/win-x86-commandline/v${project.extensions.nuget.version}/${exeName}"
+            def nugetUrl = ""
+            if (project.extensions.nuget.nugetUrl != null) {
+                nugetUrl = project.extensions.nuget.nugetUrl
+            } else {            
+                def version = project.extensions.nuget.version
+                def exeName = version < '3.4.4' ? 'nuget.exe' : 'NuGet.exe'
+                nugetUrl = "https://dist.nuget.org/win-x86-commandline/v${version}/${exeName}"
+            } 
             project.logger.debug "Downloading NuGet from $nugetUrl ..."
             new URL(nugetUrl).withInputStream { i -> localNuget.withOutputStream{ it << i } }
         }
