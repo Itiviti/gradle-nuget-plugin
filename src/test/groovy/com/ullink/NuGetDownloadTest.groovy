@@ -7,12 +7,14 @@ import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-import java.nio.channels.Channels
 import java.nio.file.Paths
 import java.util.zip.CRC32
 
-class NuGetDownloadTest {
+@RunWith(JUnit4.class)
+class NuGetDownloadTest extends GroovyTestCase  {
 
     private File cachesFolder
     private File tempFolder
@@ -76,7 +78,9 @@ class NuGetDownloadTest {
         }
 
         // Then
-        taskShouldBeExecutedWithException()
+        def error = shouldFail {
+            executeSomeNugetTask()
+        }
 
         Assert.assertFalse(nugetExecutableExistsInCache())
     }
@@ -102,7 +106,7 @@ class NuGetDownloadTest {
         // Then
         executeSomeNugetTask()
 
-        def cachedNugetFile = getNugetExeIfExist()
+        def cachedNugetFile = ensureSingleNuGetExeExists()
 
         Assert.assertNull(cachedNugetFile)
     }
@@ -126,7 +130,7 @@ class NuGetDownloadTest {
         // Then
         executeSomeNugetTask()
 
-        def cachedNugetFile = getNugetExeIfExist()
+        def cachedNugetFile = ensureSingleNuGetExeExists()
 
         Assert.assertNotNull(cachedNugetFile)
 
@@ -151,21 +155,11 @@ class NuGetDownloadTest {
 
     }
 
-    private void taskShouldBeExecutedWithException() {
-        try {
-            executeSomeNugetTask()
-        } catch (Throwable ignored) {
-            return
-        }
-
-        Assert.fail("Exception was expected")
-    }
-
     private Boolean nugetExecutableExistsInCache() {
-        return getNugetExeIfExist() != null
+        return ensureSingleNuGetExeExists() != null
     }
 
-    private File getNugetExeIfExist() {
+    private File ensureSingleNuGetExeExists() {
         if (!cachesFolder.exists()) {
             return null
         }
