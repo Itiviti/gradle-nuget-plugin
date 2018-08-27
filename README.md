@@ -21,7 +21,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.ullink.gradle:gradle-nuget-plugin:2.16"
+        classpath "com.ullink.gradle:gradle-nuget-plugin:2.17"
     }
 }
 
@@ -29,8 +29,18 @@ apply plugin: 'nuget'
 
 nuget {
     // nuget.exe version to use, defaults to 4.4.0
+
+    // there are three different mutually excluded options for Nuget binary downloading:
+
+    // first: define nuget version for download.
     // available versions can be found [here](https://dist.nuget.org/index.html)
     version = '4.4.0'
+
+    // second - set nuget location, which will be used for download:
+    nugetExePath = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+
+    // third: define nuget executable file, which is already downloaded previously:
+    nugetExePath = "C:\\Tools\\Nuget\\nuget.exe"
 }
 
 nugetSpec {
