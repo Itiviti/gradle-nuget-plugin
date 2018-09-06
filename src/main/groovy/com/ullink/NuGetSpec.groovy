@@ -1,6 +1,7 @@
 package com.ullink
 
 import com.ullink.packagesparser.NugetParser
+import com.ullink.packagesparser.PackageReferenceParser
 import com.ullink.packagesparser.PackagesConfigParser
 import com.ullink.packagesparser.ProjectJsonParser
 import groovy.util.slurpersupport.GPathResult
@@ -111,6 +112,7 @@ class NuGetSpec extends Exec {
                 def dependencies = []
                 dependencies.addAll getDependencies(mainProject, packageConfigFileName, new PackagesConfigParser())
                 dependencies.addAll getDependencies(mainProject, projectJsonFileName, new ProjectJsonParser())
+                dependencies.addAll getDependencies(mainProject, mainProject.properties.MSBuildProjectFile.toString(), new PackageReferenceParser())
 
                 if (!dependencies.isEmpty())
                     setDefaultMetadata('dependencies', dependencies)
