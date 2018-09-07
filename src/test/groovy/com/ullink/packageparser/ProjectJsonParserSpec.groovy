@@ -1,4 +1,4 @@
-package com.ullink
+package com.ullink.packageparser
 
 import com.ullink.packagesparser.ProjectJsonParser
 import groovy.json.JsonBuilder
