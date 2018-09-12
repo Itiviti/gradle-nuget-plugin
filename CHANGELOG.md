@@ -1,10 +1,13 @@
 # gradle-nuget-plugin changelog
 
+## 2.18
+
 ## 2.17
 ### Added
 * Ability to download nuget executable from the custom location (this can be used to download nuget.exe from local maven server)
 * Ability to use previously downloaded nuget from custom location (this is useful when CI already downloaded nuget.exe)
 * Upgrade gradle used to the newest version
+* Ability to generate dependencies from PackageReferences in project file
 
 ## 2.16
 ### Added
