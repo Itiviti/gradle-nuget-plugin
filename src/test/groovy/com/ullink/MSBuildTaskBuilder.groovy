@@ -46,4 +46,9 @@ class MSBuildTaskBuilder {
     public MSBuildTaskBuilder withProjectFile(File file) {
         withProjectFile(file.path)
     }
+
+    public MSBuildTaskBuilder withMainProjectProperty(String name, String value) {
+        mainProjectProperties[name] = value
+        this
+    }
 }

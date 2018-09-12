@@ -557,4 +557,48 @@ class NuGetSpecTest {
             assertXMLEqual(expected, nuspecGenerated)
         }
     }
+
+    @Test
+    public void generateNuspec_defaultDependenciesFromProjectPackageReferences() {
+        def project = newNugetProject()
+
+        project.nugetSpec {
+            nuspec {}
+        }
+
+        File.createTempDir().with { projectFolder ->
+            deleteOnExit()
+
+            def csproj = new File(getClass().getResource('packageparser/packagereference.csproj').toURI())
+            def msbuildTask = new MSBuildTaskBuilder()
+                    .withAssemblyName('bar')
+                    .withProjectFile(csproj)
+                    .withMainProjectProperty('MSBuildProjectFile', 'packagereference.csproj')
+                    .build()
+
+            project.tasks.add(msbuildTask)
+
+            def expected =
+                    '''
+                    <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+                        <metadata>
+                            <id>foo</id>
+                            <version>2.1</version>
+                            <description>fooDescription</description>
+                            <dependencies>
+                                <dependency id="Microsoft.AspNetCore.Mvc.Abstractions" version="1.1.2"/>
+                                <dependency id="Microsoft.AspNetCore.Mvc.Core" version="1.1.2"/>
+                                <dependency id="Microsoft.Extensions.Caching.Abstractions" version="1.1.1"/>
+                                <dependency id="Microsoft.Extensions.Configuration.Binder" version="1.1.1"/>
+                                <dependency id="Newtonsoft.Json" version="9.0.1"/>
+                                <dependency id="StyleCop.Analyzers" version="1.0.0"/>
+                                <dependency id="NuGet.Versioning" version="3.6.0" include="build" exclude="none"/>
+                                <dependency id="System.Xml.XDocument" version="4.3.0"/>
+                            </dependencies>
+                        </metadata>
+                    </package>'''
+            def nuspecGenerated = project.tasks.nugetSpec.generateNuspec()
+            assertXMLEqual(expected, nuspecGenerated)
+        }
+    }
 }
