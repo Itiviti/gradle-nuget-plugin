@@ -12,6 +12,7 @@ class NuGetPack extends BaseNuGet {
 
     def destinationDir = project.convention.plugins.base.distsDir
     def basePath
+    def packageVersion
     def exclude
     def generateSymbols = false
     def tool = false
@@ -52,7 +53,7 @@ class NuGetPack extends BaseNuGet {
 
         if (basePath) args '-BasePath', basePath
 
-        def version = spec?.metadata?.version ?: project.version
+        def version = getFinalPackageVersion(spec)
         if (version) args '-Version', version
 
         if (exclude) args '-Exclude', exclude
@@ -121,9 +122,13 @@ class NuGetPack extends BaseNuGet {
 
     File getPackageFile() {
         def spec = getNuspec()
-        def version = spec?.metadata?.version ?: project.version
+        def version = getFinalPackageVersion(spec)
         def id = spec?.metadata?.id?.toString() ?: getIdFromMsbuildTask()
         new File(getDestinationDir(), id + '.' + version + '.nupkg')
+    }
+
+    private String getFinalPackageVersion(spec) {
+        return packageVersion ?: spec?.metadata?.version ?: project.version
     }
 
     String getIdFromMsbuildTask() {
