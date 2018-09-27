@@ -18,18 +18,17 @@ class NuGetSources extends BaseNuGet {
 
     NuGetSources() {
         super('sources')
-        project.afterEvaluate{
-            if(!operation){
-                throw new GradleException('Operation not specified for NuGetSources task.')
-            }
-            if(operation != Operation.list && !sourceName){
-                throw new GradleException('SourceName not specified for NuGetSources task.')
-            }
-        }
     }
 
     @Override
     void exec() {
+        if(!operation){
+            throw new GradleException('Operation not specified for NuGetSources task.')
+        }
+        if(operation != Operation.list && !sourceName){
+            throw new GradleException('SourceName not specified for NuGetSources task.')
+        }
+
         args operation
         if (sourceName) args '-Name', sourceName
         if (sourceUrl) args '-Source', sourceUrl        
