@@ -1,6 +1,11 @@
 # gradle-nuget-plugin changelog
 
 ## 2.18
+### Changed
+* built with gradle 4.7 (above won't work till we migrate out of plugindev)
+
+### Fixed
+* Project configuration fails without nugetSources section in build.gradle ([#66](https://github.com/Ullink/gradle-nuget-plugin/pull/66))
 
 ## 2.17
 ### Added
