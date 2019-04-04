@@ -28,13 +28,13 @@ buildscript {
 apply plugin: 'nuget'
 
 nuget {
-    // nuget.exe version to use, defaults to 4.4.0
+    // nuget.exe version to use, defaults to 4.9.4
 
     // there are three different mutually excluded options for Nuget binary downloading:
 
     // first: define nuget version for download.
     // available versions can be found [here](https://dist.nuget.org/index.html)
-    version = '4.4.0'
+    version = '4.9.4'
 
     // second - set nuget location, which will be used for download:
     nugetExePath = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
@@ -44,7 +44,7 @@ nuget {
 }
 
 nugetSpec {
-    // Array, Map and Closure could be used to generate nuspec XML, for details please check NuGetSpecTest 
+    // Array, Map and Closure could be used to generate nuspec XML, for details please check NuGetSpecTest
     nuspec = [
         metadata: [
             title:          'project title',
@@ -103,8 +103,8 @@ Where
  - username - optional username for nuget sources that require http basic authentication
  - password - optional password for nuget sources that require http basic authentication
  - configFile - optional NuGet.config file to modify
- 
-  
+
+
 # See also
 
 [Gradle Msbuild plugin](https://github.com/Ullink/gradle-msbuild-plugin) - Allows to build VS projects & solutions.
