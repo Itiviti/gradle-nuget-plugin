@@ -27,9 +27,6 @@ class NuGetPluginTest {
 
     @Test
     public void nugetPackWorks() {
-
-        project.tasks.clean.execute()
-
         File nuspec = new File(project.tasks.nugetPack.temporaryDir, 'foo.nuspec')
         nuspec.text = '''<?xml version='1.0'?>
 <package xmlns='http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd'>
@@ -52,15 +49,12 @@ class NuGetPluginTest {
             nuspecFile = nuspec
         }
 
-        project.tasks.nugetPack.execute()
+        project.tasks.nugetPack.exec()
         assertTrue(project.tasks.nugetPack.packageFile.exists())
     }
 
     @Test
     public void nugetPackSpecifyVersion() {
-
-        project.tasks.clean.execute()
-
         File nuspec = new File(project.tasks.nugetPack.temporaryDir, 'bar.nuspec')
         nuspec.text = '''<?xml version='1.0'?>
 <package xmlns='http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd'>
@@ -84,7 +78,7 @@ class NuGetPluginTest {
             packageVersion = "100.200.300"
         }
 
-        project.tasks.nugetPack.execute()
+        project.tasks.nugetPack.exec()
         def packageFile = project.tasks.nugetPack.packageFile
         assertEquals("bar.100.200.300.nupkg", packageFile.name)
         assertTrue(packageFile.exists())
