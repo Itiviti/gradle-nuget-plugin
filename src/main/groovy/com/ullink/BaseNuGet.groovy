@@ -7,7 +7,7 @@ import java.nio.file.Paths
 
 import static org.apache.tools.ant.taskdefs.condition.Os.*
 
-public class BaseNuGet extends Exec {
+class BaseNuGet extends Exec {
     private static final String NUGET_EXE = 'NuGet.exe'
 
     @Console
@@ -16,7 +16,7 @@ public class BaseNuGet extends Exec {
     @Input
     String nugetExePath
 
-    public BaseNuGet() {
+    BaseNuGet() {
     }
 
     private File getNugetHome() {

@@ -9,16 +9,16 @@ import org.gradle.api.tasks.*
 class NuGetPack extends BaseNuGet {
 
     @Optional
-    @Input
-    def nuspecFile
+    @InputFile
+    File nuspecFile
     @Optional
-    @Input
-    def csprojPath
+    @InputFile
+    File csprojPath
 
     @OutputDirectory
     def destinationDir = project.convention.plugins.base.distsDir
-    @Input
-    def basePath
+    @InputFile
+    File basePath
     @Input
     def packageVersion
     @Optional
@@ -60,6 +60,18 @@ class NuGetPack extends BaseNuGet {
                 }
             }
         }
+    }
+
+    void setDestinationDir(String path) {
+        destinationDir = project.file(path)
+    }
+
+    void setNuspecFile(String path) {
+        nuspecFile = project.file(path)
+    }
+
+    void setCsprojPath(String path) {
+        csprojPath = project.file(path)
     }
 
     @Override
@@ -109,16 +121,12 @@ class NuGetPack extends BaseNuGet {
     }
 
     NuGetSpec getDependentNuGetSpec() {
-        dependsOn.find { it instanceof NuGetSpec }
+        dependsOn.find { it instanceof NuGetSpec } as NuGetSpec
     }
 
     // Because Nuget pack handle csproj or nuspec file we should be able to use it in plugin
-    @InputFile
     File getNuspecOrCsproj() {
-        if (csprojPath) {
-            return project.file(csprojPath)
-        }
-        getNuspecFile()
+        csprojPath ? csprojPath : getNuspecFile()
     }
 
     GPathResult getNuspec() {
@@ -136,7 +144,7 @@ class NuGetPack extends BaseNuGet {
 
     File getNuspecFile() {
         if (nuspecFile) {
-            return project.file(this.nuspecFile)
+            return nuspecFile
         }
         if (dependentNuGetSpec) {
             return dependentNuGetSpec.nuspecFile

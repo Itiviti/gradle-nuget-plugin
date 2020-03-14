@@ -1,5 +1,12 @@
 # gradle-nuget-plugin changelog
 
+## 2.19
+### Changed
+* Add Input and Output Annotations for Gradle 7
+
+### Removed
+* Due to conflict in Gradle 6.1, `timeout` in `nugetPush` is removed
+
 ## 2.18
 ### Changed
 * built with gradle 4.7 (above won't work till we migrate out of plugindev)

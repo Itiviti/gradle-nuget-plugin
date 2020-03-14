@@ -1,14 +1,38 @@
 package com.ullink
 
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
+
 class NuGetPush extends BaseNuGet {
 
-    def nupkgFile
+    @Optional
+    @InputFile
+    File nupkgFile
+    @Optional
+    @Input
     def serverUrl
+    @Optional
+    @InputFile
     def apiKey
+    @Optional
+    @InputFile
     def configFile
 
     NuGetPush() {
         super('push')
+    }
+
+    void setNupkgFile(String path) {
+        nupkgFile = project.file(path)
+    }
+
+    void setApiKey(String path) {
+        apiKey = project.file(path)
+    }
+
+    void setConfigFile(String path) {
+        configFile = project.file(path)
     }
 
     String getNugetPackOutputFile() {
@@ -17,7 +41,7 @@ class NuGetPush extends BaseNuGet {
     }
 
     NuGetPack getDependentNuGetPack() {
-        dependsOn.find { it instanceof NuGetPack }
+        dependsOn.find { it instanceof NuGetPack } as NuGetPack
     }
 
     @Override

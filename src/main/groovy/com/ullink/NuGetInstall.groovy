@@ -4,14 +4,17 @@ import org.gradle.api.tasks.*;
 
 class NuGetInstall extends BaseNuGet {
 
+    @Optional
     @Input
-    def packageId
+    String packageId
+    @Optional
     @InputFile
     File packagesConfigFile
     @Input
     def sources = [] as Set
     @OutputDirectory
     File outputDirectory
+    @Optional
     @Input
     def version
     @Input
@@ -22,15 +25,34 @@ class NuGetInstall extends BaseNuGet {
     def noCache = false
     @Input
     def requireConsent = false
+    @Optional
     @InputDirectory
     File solutionDirectory
+    @Optional
     @Input
     def conflictAction
+    @Optional
     @Input
-    def configFile
+    File configFile
 
     NuGetInstall() {
         super('install')
+    }
+
+    void setPackagesConfigFile(String path) {
+        packagesConfigFile = project.file(path)
+    }
+
+    void setOutputDirectory(String path) {
+        outputDirectory = project.file(path)
+    }
+
+    void setSolutionDirectory(String path) {
+        solutionDirectory = project.file(path)
+    }
+
+    void setConfigFile(String path) {
+        configFile = project.file(path)
     }
 
     @Override

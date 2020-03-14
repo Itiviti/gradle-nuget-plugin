@@ -9,7 +9,7 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual
 
 class NuGetSpecTest {
     @Before
-    public void init() {
+    void init() {
         XMLUnit.setIgnoreWhitespace(true)
     }
 
@@ -25,18 +25,17 @@ class NuGetSpecTest {
 
     Project newNugetWithMsbuildProject() {
         def project = newNugetProject()
-        def msbuildTask = new MSBuildTaskBuilder()
+        new MSBuildTaskBuilder(project)
                 .withAssemblyName('bar')
                 .withFrameworkVersion('v3.5')
                 .withArtifact('folder/bin/bar.dll')
                 .withProjectFile('folder/does not exist')
                 .build()
-        project.tasks.add(msbuildTask)
         project
     }
 
     @Test
-    public void generateNuspec_Closure() {
+    void generateNuspec_Closure() {
         def project = newNugetProject()
 
         project.nugetSpec {
@@ -281,7 +280,7 @@ class NuGetSpecTest {
     }
 
     @Test
-    public void generateNuspec_defaultDependenciesFromPackageConfig() {
+    void generateNuspec_defaultDependenciesFromPackageConfig() {
         def project = newNugetProject()
 
         project.nugetSpec {
@@ -291,11 +290,10 @@ class NuGetSpecTest {
         File.createTempDir().with { projectFolder ->
             deleteOnExit()
 
-            def msbuildTask = new MSBuildTaskBuilder()
+            new MSBuildTaskBuilder(project)
                     .withAssemblyName('bar')
                     .withProjectFile(new File(projectFolder.path, 'bar.csproj'))
                     .build()
-            project.tasks.add(msbuildTask)
 
             File packageConfig = new File(projectFolder, 'packages.config')
             packageConfig.createNewFile()
@@ -338,11 +336,10 @@ class NuGetSpecTest {
         File.createTempDir().with { projectFolder ->
             deleteOnExit()
 
-            def msbuildTask = new MSBuildTaskBuilder()
+            new MSBuildTaskBuilder(project)
                     .withAssemblyName('bar')
                     .withProjectFile(new File(projectFolder.path, 'bar.csproj'))
                     .build()
-            project.tasks.add(msbuildTask)
 
             File packageConfig = new File(projectFolder, 'packages.config')
             packageConfig.createNewFile()
@@ -385,11 +382,10 @@ class NuGetSpecTest {
         File.createTempDir().with { projectFolder ->
             deleteOnExit()
 
-            def msbuildTask = new MSBuildTaskBuilder()
+            new MSBuildTaskBuilder(project)
                     .withAssemblyName('bar')
                     .withProjectFile(new File(projectFolder.path, 'bar.csproj'))
                     .build()
-            project.tasks.add(msbuildTask)
 
             File projectJson = new File(projectFolder, 'project.json')
             projectJson.createNewFile()
@@ -440,11 +436,10 @@ class NuGetSpecTest {
         File.createTempDir().with { projectFolder ->
             deleteOnExit()
 
-            def msbuildTask = new MSBuildTaskBuilder()
+            new MSBuildTaskBuilder(project)
                     .withAssemblyName('bar')
                     .withProjectFile(new File(projectFolder.path, 'bar.csproj'))
                     .build()
-            project.tasks.add(msbuildTask)
 
             File projectJson = new File(projectFolder, 'project.json')
             projectJson.createNewFile()
@@ -506,12 +501,10 @@ class NuGetSpecTest {
 
         File.createTempDir().with { projectFolder ->
             deleteOnExit()
-
-            def msbuildTask = new MSBuildTaskBuilder()
+            new MSBuildTaskBuilder(project)
                     .withAssemblyName('bar')
                     .withProjectFile(new File(projectFolder.path, 'bar.csproj'))
                     .build()
-            project.tasks.add(msbuildTask)
 
             File projectJson = new File(projectFolder, 'project.json')
             projectJson.createNewFile()
@@ -570,13 +563,11 @@ class NuGetSpecTest {
             deleteOnExit()
 
             def csproj = new File(getClass().getResource('packageparser/packagereference.csproj').toURI())
-            def msbuildTask = new MSBuildTaskBuilder()
+            new MSBuildTaskBuilder(project)
                     .withAssemblyName('bar')
                     .withProjectFile(csproj)
                     .withMainProjectProperty('MSBuildProjectFile', 'packagereference.csproj')
                     .build()
-
-            project.tasks.add(msbuildTask)
 
             def expected =
                     '''

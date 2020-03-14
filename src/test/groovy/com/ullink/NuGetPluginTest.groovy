@@ -54,7 +54,7 @@ class NuGetPluginTest {
     }
 
     @Test
-    public void nugetPackSpecifyVersion() {
+    void nugetPackSpecifyVersion() {
         File nuspec = new File(project.tasks.nugetPack.temporaryDir, 'bar.nuspec')
         nuspec.text = '''<?xml version='1.0'?>
 <package xmlns='http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd'>
