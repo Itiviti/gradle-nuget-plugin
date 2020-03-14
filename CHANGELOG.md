@@ -2,10 +2,11 @@
 
 ## 2.19
 ### Changed
-* Add Input and Output Annotations for Gradle 7
+* Add Input and Output Annotations for Gradle 7 [#77](https://github.com/Itiviti/gradle-nuget-plugin/issues/77)
 
 ### Removed
-* Due to conflict in Gradle 6.1, `timeout` in `nugetPush` is removed
+* Due to conflict in Gradle 6.1, `timeout` in `nugetPush` is removed [#78](https://github.com/Itiviti/gradle-nuget-plugin/issues/78)
+* Usage of deprecated base.getDistsDir [#76](https://github.com/Itiviti/gradle-nuget-plugin/issues/76)
 
 ## 2.18
 ### Changed

@@ -4,7 +4,10 @@ import com.ullink.util.GradleHelper
 import groovy.util.slurpersupport.GPathResult
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.plugins.BasePlugin
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 
 class NuGetPack extends BaseNuGet {
 
@@ -16,7 +19,7 @@ class NuGetPack extends BaseNuGet {
     File csprojPath
 
     @OutputDirectory
-    def destinationDir = project.convention.plugins.base.distsDir
+    File destinationDir = new File(project.buildDir, project.convention.plugins.base.distsDirName)
     @InputFile
     File basePath
     @Input

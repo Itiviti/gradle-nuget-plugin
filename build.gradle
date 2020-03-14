@@ -44,3 +44,5 @@ plugindev {
 }
 
 project.tasks.afterReleaseBuild.dependsOn project.tasks.bintrayUpload
+
+println new File(project.buildDir, project.convention.plugins.base.distsDirName)
