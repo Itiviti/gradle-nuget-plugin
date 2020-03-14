@@ -1,23 +1,36 @@
 package com.ullink
 
+import org.gradle.api.tasks.*;
+
 class NuGetInstall extends BaseNuGet {
 
+    @Input
     def packageId
-    def packagesConfigFile
-
+    @InputFile
+    File packagesConfigFile
+    @Input
     def sources = [] as Set
-    def outputDirectory
+    @OutputDirectory
+    File outputDirectory
+    @Input
     def version
+    @Input
     def includeVersionInPath = true
+    @Input
     def prerelease = false
+    @Input
     def noCache = false
+    @Input
     def requireConsent = false
-    def solutionDirectory
+    @InputDirectory
+    File solutionDirectory
+    @Input
     def conflictAction
+    @Input
     def configFile
 
     NuGetInstall() {
-		super('install')
+        super('install')
     }
 
     @Override
