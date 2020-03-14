@@ -4,25 +4,47 @@ import com.ullink.util.GradleHelper
 import groovy.util.slurpersupport.GPathResult
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.tasks.*
 
 class NuGetPack extends BaseNuGet {
 
+    @Optional
+    @Input
     def nuspecFile
+    @Optional
+    @Input
     def csprojPath
 
+    @OutputDirectory
     def destinationDir = project.convention.plugins.base.distsDir
+    @Input
     def basePath
+    @Input
     def packageVersion
+    @Optional
+    @Input
     def exclude
+    @Input
     def generateSymbols = false
+    @Input
     def tool = false
+    @Input
     def build = false
+    @Input
     def defaultExcludes = true
+    @Input
     def packageAnalysis = true
+    @Input
     def includeReferencedProjects = false
+    @Input
     def includeEmptyDirectories = true
+    @Input
     def properties = [:]
+    @Optional
+    @Input
     def minClientVersion
+    @Optional
+    @Input
     def msBuildVersion
 
     NuGetPack() {
@@ -91,6 +113,7 @@ class NuGetPack extends BaseNuGet {
     }
 
     // Because Nuget pack handle csproj or nuspec file we should be able to use it in plugin
+    @InputFile
     File getNuspecOrCsproj() {
         if (csprojPath) {
             return project.file(csprojPath)
