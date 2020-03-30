@@ -1,8 +1,9 @@
 package com.ullink
 
 import org.gradle.api.tasks.Exec
-import org.gradle.api.tasks.Console;
-import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Console
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.Input
 import java.nio.file.Paths
 
 import static org.apache.tools.ant.taskdefs.condition.Os.*
@@ -13,6 +14,7 @@ class BaseNuGet extends Exec {
     @Console
     String verbosity
 
+    @Optional
     @Input
     String nugetExePath
 

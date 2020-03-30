@@ -12,6 +12,7 @@ class NuGetInstall extends BaseNuGet {
     File packagesConfigFile
     @Input
     def sources = [] as Set
+    @Optional
     @OutputDirectory
     File outputDirectory
     @Optional

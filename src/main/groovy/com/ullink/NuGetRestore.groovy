@@ -20,16 +20,21 @@ class NuGetRestore extends BaseNuGet {
     def sources = [] as Set
     @Input
     def noCache = false
+    @Optional
     @InputFile
     File configFile
     @Input
     def requireConsent = false
+    @Optional
     @InputDirectory
     File solutionDirectory
     @Input
     def disableParallelProcessing = false
+    @Optional
     @Input
     def msBuildVersion
+    @Optional
+    @Input
     def packagesDirectory
 
     NuGetRestore() {
