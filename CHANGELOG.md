@@ -3,6 +3,8 @@
 ## 2.19
 ### Changed
 * Add Input and Output Annotations for Gradle 7 [#77](https://github.com/Itiviti/gradle-nuget-plugin/issues/77)
+* Built with gradle 6.2.2
+* Default NuGet version used is 5.5.0
 
 ### Removed
 * Due to conflict in Gradle 6.1, `timeout` in `nugetPush` is removed [#78](https://github.com/Itiviti/gradle-nuget-plugin/issues/78)
