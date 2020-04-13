@@ -52,6 +52,9 @@ class NuGetPack extends BaseNuGet {
 
     NuGetPack() {
         super('pack')
+        // Force always execute
+        outputs.upToDateWhen { false }
+
         project.afterEvaluate {
             def spec = getNuspec()
             def specSources = spec?.files?.file?.collect { it.@src.text() }

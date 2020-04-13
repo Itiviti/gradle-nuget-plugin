@@ -39,6 +39,9 @@ class NuGetRestore extends BaseNuGet {
 
     NuGetRestore() {
         super('restore')
+
+        // Force always execute
+        outputs.upToDateWhen { false }
     }
 
     void setSolutionFile(String path) {

@@ -1,5 +1,6 @@
 package com.ullink
 
+
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
@@ -21,6 +22,9 @@ class NuGetPush extends BaseNuGet {
 
     NuGetPush() {
         super('push')
+
+        // Force always execute
+        outputs.upToDateWhen { false }
     }
 
     void setNupkgFile(String path) {
@@ -35,7 +39,9 @@ class NuGetPush extends BaseNuGet {
         configFile = project.file(path)
     }
 
-    String getNugetPackOutputFile() {
+    @Optional
+    @InputFile
+    File getNugetPackOutputFile() {
         if (dependentNuGetPack)
            dependentNuGetPack.packageFile
     }
