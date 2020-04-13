@@ -1,29 +1,69 @@
 package com.ullink
 
 import com.ullink.util.GradleHelper
-import org.gradle.api.UnknownTaskException
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 
 class NuGetRestore extends BaseNuGet {
 
-    def solutionFile
-    def packagesConfigFile
+    @Optional
+    @InputFile
+    File solutionFile
+    @Optional
+    @InputFile
+    File packagesConfigFile
 
+    @Input
     def sources = [] as Set
+    @Input
     def noCache = false
-    def configFile
+    @Optional
+    @InputFile
+    File configFile
+    @Input
     def requireConsent = false
-    def packagesDirectory
-    def solutionDirectory
+    @Optional
+    @InputDirectory
+    File solutionDirectory
+    @Input
     def disableParallelProcessing = false
+    @Optional
+    @Input
     def msBuildVersion
+    @Optional
+    @Input
+    def packagesDirectory
 
     NuGetRestore() {
         super('restore')
+
+        // Force always execute
+        outputs.upToDateWhen { false }
+    }
+
+    void setSolutionFile(String path) {
+        solutionFile = project.file(path)
+    }
+
+    void setPackagesConfigFile(String path) {
+        packagesConfigFile = project.file(path)
+    }
+
+    void setConfigFile(String path) {
+        configFile = project.file(path)
+    }
+
+    void setSolutionDirectory(String path) {
+        solutionDirectory = project.file(path)
     }
 
     /**
-     * Only provided for backward compatibility. Uses 'sources' instead
+     * @Deprecated Only provided for backward compatibility. Uses 'sources' instead
      */
+    @Deprecated
     def setSource(String source) {
         sources.clear()
         sources.add(source)
@@ -51,7 +91,8 @@ class NuGetRestore extends BaseNuGet {
         super.exec()
     }
 
-    def getPackagesFolder() {
+    @OutputDirectory
+    File getPackagesFolder() {
         // https://docs.nuget.org/consume/command-line-reference#restore-command
         // If -PackagesDirectory <packagesDirectory> is specified, <packagesDirectory> is used as the packages directory.
         if (packagesDirectory) {
@@ -61,7 +102,7 @@ class NuGetRestore extends BaseNuGet {
         // If -SolutionDirectory <solutionDirectory> is specified, <solutionDirectory>\packages is used as the packages directory.
         // SolutionFile can also be provided.
         // Otherwise use '.\packages'
-        def solutionDir = solutionFile ? solutionFile.getParent() : solutionDirectory
-        return new File(solutionDir ?: '.', 'packages').absolutePath
+        def solutionDir = solutionFile ? project.file(solutionFile.getParent()) : solutionDirectory
+        return new File(solutionDir ? solutionDir.toString() : '.', 'packages')
     }
 }

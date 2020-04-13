@@ -1,19 +1,24 @@
 package com.ullink
 
 import org.gradle.api.tasks.Exec
-
+import org.gradle.api.tasks.Console
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.Input
 import java.nio.file.Paths
 
 import static org.apache.tools.ant.taskdefs.condition.Os.*
 
-public class BaseNuGet extends Exec {
+class BaseNuGet extends Exec {
     private static final String NUGET_EXE = 'NuGet.exe'
 
+    @Console
     String verbosity
 
+    @Optional
+    @Input
     String nugetExePath
 
-    public BaseNuGet() {
+    BaseNuGet() {
     }
 
     private File getNugetHome() {

@@ -206,6 +206,6 @@ class NuGetDownloadTest extends GroovyTestCase  {
             nuspecFile = nuspec
         }
 
-        project.tasks.nugetPack.execute()
+        project.tasks.nugetPack.exec()
     }
 }

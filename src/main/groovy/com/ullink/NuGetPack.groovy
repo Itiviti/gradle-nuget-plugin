@@ -4,29 +4,57 @@ import com.ullink.util.GradleHelper
 import groovy.util.slurpersupport.GPathResult
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 
 class NuGetPack extends BaseNuGet {
 
-    def nuspecFile
-    def csprojPath
+    @Optional
+    @InputFile
+    File nuspecFile
+    @Optional
+    @InputFile
+    File csprojPath
 
-    def destinationDir = project.convention.plugins.base.distsDir
-    def basePath
+    @OutputDirectory
+    File destinationDir = new File(project.buildDir, project.convention.plugins.base.distsDirName)
+    @InputFile
+    File basePath
+    @Input
     def packageVersion
+    @Optional
+    @Input
     def exclude
+    @Input
     def generateSymbols = false
+    @Input
     def tool = false
+    @Input
     def build = false
+    @Input
     def defaultExcludes = true
+    @Input
     def packageAnalysis = true
+    @Input
     def includeReferencedProjects = false
+    @Input
     def includeEmptyDirectories = true
+    @Input
     def properties = [:]
+    @Optional
+    @Input
     def minClientVersion
+    @Optional
+    @Input
     def msBuildVersion
 
     NuGetPack() {
         super('pack')
+        // Force always execute
+        outputs.upToDateWhen { false }
+
         project.afterEvaluate {
             def spec = getNuspec()
             def specSources = spec?.files?.file?.collect { it.@src.text() }
@@ -38,6 +66,18 @@ class NuGetPack extends BaseNuGet {
                 }
             }
         }
+    }
+
+    void setDestinationDir(String path) {
+        destinationDir = project.file(path)
+    }
+
+    void setNuspecFile(String path) {
+        nuspecFile = project.file(path)
+    }
+
+    void setCsprojPath(String path) {
+        csprojPath = project.file(path)
     }
 
     @Override
@@ -87,15 +127,12 @@ class NuGetPack extends BaseNuGet {
     }
 
     NuGetSpec getDependentNuGetSpec() {
-        dependsOn.find { it instanceof NuGetSpec }
+        dependsOn.find { it instanceof NuGetSpec } as NuGetSpec
     }
 
     // Because Nuget pack handle csproj or nuspec file we should be able to use it in plugin
     File getNuspecOrCsproj() {
-        if (csprojPath) {
-            return project.file(csprojPath)
-        }
-        getNuspecFile()
+        csprojPath ? csprojPath : getNuspecFile()
     }
 
     GPathResult getNuspec() {
@@ -113,7 +150,7 @@ class NuGetPack extends BaseNuGet {
 
     File getNuspecFile() {
         if (nuspecFile) {
-            return project.file(this.nuspecFile)
+            return nuspecFile
         }
         if (dependentNuGetSpec) {
             return dependentNuGetSpec.nuspecFile

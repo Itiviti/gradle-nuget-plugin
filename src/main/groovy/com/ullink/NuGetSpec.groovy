@@ -7,10 +7,13 @@ import com.ullink.packagesparser.ProjectJsonParser
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.XmlUtil
 import org.gradle.api.tasks.Exec
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.OutputFile
 
 class NuGetSpec extends Exec {
 
     def nuspecFile
+    @Input
     def nuspec
 
     void exec() {
@@ -21,6 +24,7 @@ class NuGetSpec extends Exec {
         new File(temporaryDir, project.name + '.nuspec')
     }
 
+    @OutputFile
     File getNuspecFile() {
         nuspecFile ?: getTempNuspecFile()
     }

@@ -5,3 +5,7 @@
 /.idea
 *.iml
 out
+.classpath
+.project
+**/bin/Debug
+**/obj/Debug
