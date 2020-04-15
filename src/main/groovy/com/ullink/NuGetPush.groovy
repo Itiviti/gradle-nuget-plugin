@@ -32,8 +32,8 @@ class NuGetPush extends BaseNuGet {
         nupkgFile = project.file(path)
     }
 
-    void setApiKey(String path) {
-        apiKey = project.file(path)
+    void setApiKey(String key) {
+        apiKey = key
     }
 
     void setConfigFile(String path) {

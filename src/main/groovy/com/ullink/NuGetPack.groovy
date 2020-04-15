@@ -168,7 +168,7 @@ class NuGetPack extends BaseNuGet {
         return packageVersion ?: spec?.metadata?.version ?: project.version
     }
 
-    @Input
+    @Internal
     String getIdFromMsbuildTask() {
         def isInputProject = { csprojPath.equalsIgnoreCase(it.projectFile) }
         def msbuildTask = project.tasks.find {
