@@ -4,16 +4,11 @@ import com.ullink.util.GradleHelper
 import groovy.util.slurpersupport.GPathResult
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.plugins.BasePlugin
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.*
 
 class NuGetPack extends BaseNuGet {
-
-    @Optional
-    @InputFile
     File nuspecFile
+
     @Optional
     @InputFile
     File csprojPath
@@ -126,15 +121,18 @@ class NuGetPack extends BaseNuGet {
         }
     }
 
+    @Internal
     NuGetSpec getDependentNuGetSpec() {
         dependsOn.find { it instanceof NuGetSpec } as NuGetSpec
     }
 
     // Because Nuget pack handle csproj or nuspec file we should be able to use it in plugin
+    @InputFile
     File getNuspecOrCsproj() {
         csprojPath ? csprojPath : getNuspecFile()
     }
 
+    @Internal
     GPathResult getNuspec() {
         def nuspecFile = getNuspecFile()
         if (nuspecFile?.exists()) {
@@ -148,6 +146,7 @@ class NuGetPack extends BaseNuGet {
         }
     }
 
+    @Internal
     File getNuspecFile() {
         if (nuspecFile) {
             return nuspecFile
@@ -157,6 +156,7 @@ class NuGetPack extends BaseNuGet {
         }
     }
 
+    @OutputFile
     File getPackageFile() {
         def spec = getNuspec()
         def version = getFinalPackageVersion(spec)
@@ -168,6 +168,7 @@ class NuGetPack extends BaseNuGet {
         return packageVersion ?: spec?.metadata?.version ?: project.version
     }
 
+    @Input
     String getIdFromMsbuildTask() {
         def isInputProject = { csprojPath.equalsIgnoreCase(it.projectFile) }
         def msbuildTask = project.tasks.find {

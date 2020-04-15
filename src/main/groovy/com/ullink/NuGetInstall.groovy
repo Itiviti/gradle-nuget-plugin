@@ -33,7 +33,7 @@ class NuGetInstall extends BaseNuGet {
     @Input
     def conflictAction
     @Optional
-    @Input
+    @InputFile
     File configFile
 
     NuGetInstall() {

@@ -3,6 +3,7 @@ package com.ullink
 
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 
 class NuGetPush extends BaseNuGet {
@@ -14,7 +15,7 @@ class NuGetPush extends BaseNuGet {
     @Input
     def serverUrl
     @Optional
-    @InputFile
+    @Input
     def apiKey
     @Optional
     @InputFile
@@ -46,6 +47,7 @@ class NuGetPush extends BaseNuGet {
            dependentNuGetPack.packageFile
     }
 
+    @Internal
     NuGetPack getDependentNuGetPack() {
         dependsOn.find { it instanceof NuGetPack } as NuGetPack
     }

@@ -1,8 +1,12 @@
 # gradle-nuget-plugin changelog
 
+## 2.20
+### Fixed
+* Add Input and Output Annotations for Gradle 7 [#77](https://github.com/Itiviti/gradle-nuget-plugin/issues/77)
+* Incorrect Input annotations applied
+
 ## 2.19
 ### Changed
-* Add Input and Output Annotations for Gradle 7 [#77](https://github.com/Itiviti/gradle-nuget-plugin/issues/77)
 * Built with gradle 6.2.2
 * Default NuGet version used is 5.5.0
 
