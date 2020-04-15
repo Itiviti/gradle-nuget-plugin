@@ -15,8 +15,10 @@ class NuGetPack extends BaseNuGet {
 
     @OutputDirectory
     File destinationDir = new File(project.buildDir, project.convention.plugins.base.distsDirName)
+    @Optional
     @InputFile
     File basePath
+    @Optional
     @Input
     def packageVersion
     @Optional
