@@ -49,7 +49,7 @@ class NuGetPush extends BaseNuGet {
 
     @Internal
     NuGetPack getDependentNuGetPack() {
-        dependsOn.find { it instanceof NuGetPack } as NuGetPack
+        dependsOn.find { it instanceof NuGetPack && it.enabled } as NuGetPack
     }
 
     @Override

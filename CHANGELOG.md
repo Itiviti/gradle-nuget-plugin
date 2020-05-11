@@ -1,5 +1,9 @@
 # gradle-nuget-plugin changelog
 
+## 2.21
+### Fixed
+* NugetPush should only consider NugetPack's output if it is enabled
+
 ## 2.20
 ### Fixed
 * Add Input and Output Annotations for Gradle 7 [#77](https://github.com/Itiviti/gradle-nuget-plugin/issues/77)
