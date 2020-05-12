@@ -1,5 +1,9 @@
 # gradle-nuget-plugin changelog
 
+## 2.22
+### Fixed
+* Nuspec cannot be regard as Input since closure can't be serialized
+
 ## 2.21
 ### Fixed
 * NugetPush should only consider NugetPack's output if it is enabled
