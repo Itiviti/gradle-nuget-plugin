@@ -24,7 +24,6 @@ class NuGetPlugin implements Plugin<Project> {
         }
 
         project.task('nugetPush', type: NuGetPush, dependsOn: nugetPack) {
-            group = BasePlugin.UPLOAD_GROUP
             description = 'Pushes the NuGet package to the configured server url.'
         }
 
