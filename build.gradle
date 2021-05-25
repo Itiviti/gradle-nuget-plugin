@@ -1,14 +1,13 @@
 plugins {
-    id 'nu.studer.plugindev' version '1.0.12'
-    id 'com.jfrog.bintray' version '1.8.0'
+    id 'com.gradle.plugin-publish' version '0.15.0'
+    id 'java-gradle-plugin'
     id 'net.researchgate.release' version '2.6.0'
 }
 
-group = 'com.ullink.gradle'
-
 apply plugin: 'groovy'
+apply plugin: 'com.gradle.plugin-publish'
 
-description 'Gradle plugin for NuGet, to package, upload artifacts and restore packages.'
+group = 'com.ullink.gradle'
 
 dependencies {
     implementation 'commons-io:commons-io:2.5'
@@ -16,25 +15,36 @@ dependencies {
     testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
 }
 
-bintray {
-    pkg.repo = 'gradle-plugins'
-    pkg.version.gpg.sign = true
-    pkg.userOrg = 'ullink'
+
+pluginBundle {
+    website = 'https://github.com/Itiviti/gradle-nuget-plugin'
+    vcsUrl = 'https://github.com/Itiviti/gradle-nuget-plugin'
+    description 'Gradle plugin for NuGet, to package, upload artifacts and restore packages.'
+
+    plugins {
+        nugetBase {
+            displayName = 'Gradle Nuget Plugin Base'
+            description = 'Base plugin without creating tasks'
+            tags = ['nuget']
+        }
+        nuget {
+            displayName = 'Gradle Nuget Plugin'
+            tags = ['nuget']
+        }
+    }
 }
 
-plugindev {
-    pluginId 'com.ullink.nuget'
-    pluginName 'com.ullink.gradle:gradle-nuget-plugin'
-    pluginImplementationClass 'com.ullink.NuGetPlugin'
-    pluginDescription project.description
-    pluginLicenses 'Apache-2.0'
-    pluginTags 'gradle', 'plugin', 'nuget', 'c#', '.net'
-    authorId 'gluck'
-    authorName 'Francois Valdy'
-    authorEmail 'francois.valdy@gmail.com'
-    projectUrl "https://github.com/Ullink/${project.name}"
-    projectInceptionYear '2012'
-    done()
+gradlePlugin {
+    plugins {
+        nugetBase {
+            id = 'com.ullink.nuget-base'
+            implementationClass = 'com.ullink.NuGetBasePlugin'
+        }
+        nuget {
+            id = 'com.ullink.nuget'
+            implementationClass = 'com.ullink.NuGetPlugin'
+        }
+    }
 }
 
-project.tasks.afterReleaseBuild.dependsOn project.tasks.bintrayUpload
+project.tasks.afterReleaseBuild.dependsOn project.tasks.publishPlugins
