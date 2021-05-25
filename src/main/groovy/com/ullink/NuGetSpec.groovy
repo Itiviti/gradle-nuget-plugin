@@ -12,7 +12,6 @@ import org.gradle.api.tasks.OutputFile
 
 class NuGetSpec extends Exec {
 
-    @Internal
     def nuspecFile
     @Internal
     def nuspec
