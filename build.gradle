@@ -19,7 +19,6 @@ dependencies {
 pluginBundle {
     website = 'https://github.com/Itiviti/gradle-nuget-plugin'
     vcsUrl = 'https://github.com/Itiviti/gradle-nuget-plugin'
-    description 'Gradle plugin for NuGet, to package, upload artifacts and restore packages.'
 
     plugins {
         nugetBase {
@@ -29,6 +28,7 @@ pluginBundle {
         }
         nuget {
             displayName = 'Gradle Nuget Plugin'
+            description = 'Gradle plugin for NuGet, to package, upload artifacts and restore packages.'
             tags = ['nuget']
         }
     }
