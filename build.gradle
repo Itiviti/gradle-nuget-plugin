@@ -32,6 +32,10 @@ pluginBundle {
             tags = ['nuget']
         }
     }
+
+    mavenCoordinates {
+        groupId = 'com.ullink.gradle'
+    }
 }
 
 gradlePlugin {
