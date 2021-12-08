@@ -30,6 +30,15 @@ class NuGetPlugin implements Plugin<Project> {
         project.task('nugetSources', type: NuGetSources) {
             description = 'Adds, removes, enables, disables and lists nuget sources (feeds).'
         }
+
+        def nugetCleanPackagesFolderTask = project.tasks.register('nugetCleanPackagesFolder', NugetClearLocalPackagesFolder)
+                {
+                    description 'Removes local nuget packages folder'
+                }
+
+        project.tasks.named('clean'){
+            dependsOn nugetCleanPackagesFolderTask
+        }
     }
 }
 
