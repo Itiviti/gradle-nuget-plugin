@@ -62,6 +62,7 @@ class BaseNuGet extends Exec {
 
     private File getNugetExeLocalPath() {
         File localNuget
+        String nugetExePath = project.extensions.nuget.nugetExePath
 
         if (nugetExePath != null && !nugetExePath.empty && !nugetExePath.startsWith("http")) {
             localNuget = new File(nugetExePath)
@@ -95,6 +96,8 @@ class BaseNuGet extends Exec {
     }
 
     private String getNugetDownloadLink() {
+        String nugetExePath = project.extensions.nuget.nugetExePath
+
         if (nugetExePath != null && !nugetExePath.empty && nugetExePath.startsWith("http")) {
             project.logger.debug("Nuget url path is resolved from property 'nugetExePath'")
 
