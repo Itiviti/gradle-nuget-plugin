@@ -1,5 +1,6 @@
 package com.ullink
 
+import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Optional
@@ -20,6 +21,7 @@ abstract class BaseNuGet extends Exec {
     String nugetExePath
 
     BaseNuGet() {
+        logging.captureStandardOutput(LogLevel.INFO)
     }
 
     private File getNugetHome() {
