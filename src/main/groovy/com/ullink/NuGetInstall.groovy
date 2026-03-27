@@ -2,7 +2,7 @@ package com.ullink
 
 import org.gradle.api.tasks.*;
 
-class NuGetInstall extends BaseNuGet {
+abstract class NuGetInstall extends BaseNuGet {
 
     @Optional
     @Input
@@ -56,8 +56,10 @@ class NuGetInstall extends BaseNuGet {
         configFile = project.file(path)
     }
 
+    @TaskAction
     @Override
     void exec() {
+        prepare()
         if (packageId) args packageId
         if (packagesConfigFile) args packagesConfigFile
 

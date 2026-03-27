@@ -4,8 +4,9 @@ import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.TaskAction
 
-class NuGetSources extends BaseNuGet {
+abstract class NuGetSources extends BaseNuGet {
     
     enum Operation{
         add, remove, enable, disable, list, update
@@ -39,8 +40,10 @@ class NuGetSources extends BaseNuGet {
         configFile = project.file(path)
     }
 
+    @TaskAction
     @Override
     void exec() {
+        prepare()
         if(!operation){
             throw new GradleException('Operation not specified for NuGetSources task.')
         }

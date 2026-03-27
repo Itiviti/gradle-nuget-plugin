@@ -4,18 +4,19 @@ import com.ullink.packagesparser.NugetParser
 import com.ullink.packagesparser.PackageReferenceParser
 import com.ullink.packagesparser.PackagesConfigParser
 import com.ullink.packagesparser.ProjectJsonParser
-import groovy.util.slurpersupport.GPathResult
 import groovy.xml.XmlUtil
-import org.gradle.api.tasks.Exec
+import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
 
-class NuGetSpec extends Exec {
+abstract class NuGetSpec extends DefaultTask {
 
     def nuspecFile
     @Internal
     def nuspec
 
+    @TaskAction
     void exec() {
         generateNuspecFile()
     }
@@ -74,7 +75,7 @@ class NuGetSpec extends Exec {
         def final packageConfigFileName = 'packages.config'
         def final projectJsonFileName = 'project.json'
 
-        GPathResult root = new XmlSlurper(false, false).parseText(nuspecString)
+        def root = BaseNuGet.createXmlSlurper().parseText(nuspecString)
 
         def defaultMetadata = []
         def setDefaultMetadata = { String node, value ->

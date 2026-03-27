@@ -1,12 +1,11 @@
 package com.ullink
 
 import com.ullink.util.GradleHelper
-import groovy.util.slurpersupport.GPathResult
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.*
 
-class NuGetPack extends BaseNuGet {
+abstract class NuGetPack extends BaseNuGet {
     File nuspecFile
 
     @Optional
@@ -14,7 +13,7 @@ class NuGetPack extends BaseNuGet {
     File csprojPath
 
     @OutputDirectory
-    File destinationDir = new File(project.buildDir, project.convention.plugins.base.distsDirName)
+    File destinationDir = project.layout.buildDirectory.dir("distributions").get().asFile
     @Optional
     @InputFile
     File basePath
@@ -77,8 +76,10 @@ class NuGetPack extends BaseNuGet {
         csprojPath = project.file(path)
     }
 
+    @TaskAction
     @Override
     void exec() {
+        prepare()
         args getNuspecOrCsproj()
         def spec = getNuspec()
 
@@ -135,15 +136,15 @@ class NuGetPack extends BaseNuGet {
     }
 
     @Internal
-    GPathResult getNuspec() {
+    def getNuspec() {
         def nuspecFile = getNuspecFile()
         if (nuspecFile?.exists()) {
-            return new XmlSlurper(false, false).parse(project.file(nuspecFile))
+            return createXmlSlurper().parse(project.file(nuspecFile))
         }
         if (dependentNuGetSpec) {
             def generatedNuspec = dependentNuGetSpec.generateNuspec()
             if (generatedNuspec) {
-                return new XmlSlurper(false, false).parseText(generatedNuspec)
+                return createXmlSlurper().parseText(generatedNuspec)
             }
         }
     }

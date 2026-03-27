@@ -6,8 +6,9 @@ import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
 
-class NuGetRestore extends BaseNuGet {
+abstract class NuGetRestore extends BaseNuGet {
 
     @Optional
     @InputFile
@@ -69,8 +70,10 @@ class NuGetRestore extends BaseNuGet {
         sources.add(source)
     }
 
+    @TaskAction
     @Override
     void exec() {
+        prepare()
         if (packagesConfigFile) args packagesConfigFile
         if (solutionFile) args solutionFile
 
@@ -88,6 +91,7 @@ class NuGetRestore extends BaseNuGet {
             (sources ? "from $sources" : '') +
             (packagesConfigFile ? "for packages.config ($packagesConfigFile)": '') +
             (solutionFile ? "for solution file ($solutionFile)" : '')
+
         super.exec()
     }
 

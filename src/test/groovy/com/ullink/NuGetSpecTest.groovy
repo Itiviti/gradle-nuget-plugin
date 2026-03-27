@@ -577,7 +577,7 @@ class NuGetSpecTest {
                             <version>2.1</version>
                             <description>fooDescription</description>
                             <dependencies>
-                                <dependency id="Microsoft.AspNetCore.Mvc.Abstractions" version="1.1.2"/>
+                                <dependency id="Microsoft.AspNetCore.Mvc.Abstractions" version="1.1.3"/>
                                 <dependency id="Microsoft.AspNetCore.Mvc.Core" version="1.1.2"/>
                                 <dependency id="Microsoft.Extensions.Caching.Abstractions" version="1.1.1"/>
                                 <dependency id="Microsoft.Extensions.Configuration.Binder" version="1.1.1"/>

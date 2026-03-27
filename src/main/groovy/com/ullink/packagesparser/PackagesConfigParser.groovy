@@ -1,10 +1,12 @@
 package com.ullink.packagesparser
 
+import com.ullink.BaseNuGet
+
 class PackagesConfigParser implements NugetParser {
     @Override
     Collection getDependencies(File file) {
         def defaultDependencies = []
-        def packages = new XmlParser().parse(file)
+        def packages = BaseNuGet.createXmlSlurper(false, true).parse(file)
         packages.package
                 .findAll { !it.@developmentDependency.toString().toBoolean() }
                 .each {
@@ -13,11 +15,11 @@ class PackagesConfigParser implements NugetParser {
                     dependency(id: packageElement.@id, version: getVersion(packageElement))
                 })
         }
-        return defaultDependencies;
+        return defaultDependencies
     }
 
     String getVersion(Object element) {
-        if (element.@allowedVersions)
+        if (element.@allowedVersions && !element.@allowedVersions.isEmpty())
             return element.@allowedVersions
         return  element.@version
     }

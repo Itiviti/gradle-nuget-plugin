@@ -4,11 +4,12 @@ import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.Input
+
 import java.nio.file.Paths
 
 import static org.apache.tools.ant.taskdefs.condition.Os.*
 
-class BaseNuGet extends Exec {
+abstract class BaseNuGet extends Exec {
     private static final String NUGET_EXE = 'NuGet.exe'
 
     @Console
@@ -42,11 +43,10 @@ class BaseNuGet extends Exec {
         args command
     }
 
-    @Override
-    void exec() {
+    void prepare() {
         File localNuget = getNugetExeLocalPath()
 
-        project.logger.debug "Using NuGet from path $localNuget.path"
+        project.logger.info "Using NuGet from path $localNuget.path"
         if (isFamily(FAMILY_WINDOWS)) {
             executable localNuget
         } else {
@@ -56,8 +56,6 @@ class BaseNuGet extends Exec {
 
         args '-NonInteractive'
         args '-Verbosity', (verbosity ?: getNugetVerbosity())
-
-        super.exec()
     }
 
     private File getNugetExeLocalPath() {
@@ -110,5 +108,21 @@ class BaseNuGet extends Exec {
         if (logger.debugEnabled) return 'detailed'
         if (logger.infoEnabled) return 'normal'
         return 'quiet'
+    }
+
+    static def createXmlSlurper(boolean validating = false, boolean namespaceAware = false) {
+        def slurperClass = null
+
+        // Try Groovy 4+ package first
+        try {
+            slurperClass = Class.forName('groovy.xml.XmlSlurper')
+        } catch (ClassNotFoundException e) {
+            // Fall back to Groovy 2/3 package
+            slurperClass = Class.forName('groovy.util.XmlSlurper')
+        }
+
+        return slurperClass
+                .getDeclaredConstructor(Boolean.TYPE, Boolean.TYPE)
+                .newInstance(validating, namespaceAware)
     }
 }

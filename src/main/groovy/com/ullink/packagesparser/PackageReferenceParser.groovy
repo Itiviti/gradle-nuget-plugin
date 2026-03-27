@@ -1,7 +1,6 @@
 package com.ullink.packagesparser
 
-import groovy.util.slurpersupport.GPathResult
-
+import com.ullink.BaseNuGet
 
 class PackageReferenceParser implements NugetParser {
 
@@ -11,12 +10,12 @@ class PackageReferenceParser implements NugetParser {
     Collection getDependencies(File file) {
         def defaultDependencies = []
 
-        def project = new XmlSlurper().parse(file)
+        def project = BaseNuGet.createXmlSlurper(false, true).parse(file)
 
         project.'**'
             .findAll { it.name() == 'PackageReference' && getAttributeOrNodeText(it, 'PrivateAssets') != 'all' }
             .each {
-                def reference = it as GPathResult
+                def reference = it
                 def includeAssets = getAttributeOrNodeText(reference, 'IncludeAssets')
                 def excludeAssets = getAttributeOrNodeText(reference, 'ExcludeAssets')
                 def args = [
@@ -36,7 +35,7 @@ class PackageReferenceParser implements NugetParser {
         return defaultDependencies
     }
 
-    private static String getAttributeOrNodeText(GPathResult parentNode, String key) {
+    private static String getAttributeOrNodeText(def parentNode, String key) {
         def node = parentNode."${key}".toString().trim()
         if (node) {
             return node
