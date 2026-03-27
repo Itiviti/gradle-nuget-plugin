@@ -1,4 +1,0 @@
-language: csharp
-sudo: false
-script:
-  - ./gradlew -is --console plain build
